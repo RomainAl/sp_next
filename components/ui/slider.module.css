@@ -1,0 +1,13 @@
+.SliderRoot[data-orientation="vertical"] {
+  flex-direction: column;
+  width: 40px;
+  height: 100px;
+}
+
+.SliderTrack[data-orientation="vertical"] {
+  width: 10px;
+}
+
+.SliderRange[data-orientation="vertical"] {
+  width: 100%;
+}
