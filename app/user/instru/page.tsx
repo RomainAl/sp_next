@@ -2,18 +2,19 @@
 
 import SoundwaveCanvas from "@/components/soundwaveCanvas";
 import { Slider } from "@/components/ui/slider";
-import { useUserAudioStore } from "@/store/useraudio.store";
+import { useAudioStore } from "@/store/audio.store";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useWindowSize } from "usehooks-ts";
 
 export default function Home() {
   const searchParams = useSearchParams();
-  const audioContext = useUserAudioStore((store) => store.audioContext);
+  const audioContext = useAudioStore((store) => store.audioContext);
   const intruNb: number = searchParams.has("n") ? Number(searchParams.get("n")) : 0;
-  const instrus = useUserAudioStore((store) => store.instrus);
+  const instrus = useAudioStore((store) => store.instrus);
   const instru = instrus[intruNb];
-  const analyser = useUserAudioStore((store) => store.audioAnalyser);
+
+  const analyser = useAudioStore((store) => store.audioAnalyser);
 
   const { width = 0 } = useWindowSize();
   const sliderValChange = (sliderName: string, value: number) => {
@@ -41,15 +42,15 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center h-screen w-screen gap-7">
-        {/* <canvas ref={canvasRef} className="absolute top-0 h-full w-full left-0 z-0" width={width} height={height}></canvas> */}
+      <div className="flex h-screen w-screen flex-col items-center justify-center gap-7">
         <p>Instru n°{intruNb}</p>
-        <div className="w-2/3 rounded-full border border-primary/50 bg-background shadow transition-colors">
+        <div className="flex w-2/3 flex-col rounded-full border border-primary/50 bg-background shadow transition-colors">
           <SoundwaveCanvas width={width} height={width / 5} />
+          {/* <canvas ref={canvasRef} className="h-full w-full" width={width} height={width / 5}></canvas> */}
         </div>
-        <div className="flex flex-col w-2/3 gap-4">
+        <div className="flex w-2/3 flex-col gap-4">
           {instru?.parameters.map((param) => (
-            <div key={param.name} className="flex flex-col gap-2 justify-center items-center">
+            <div key={param.name} className="flex flex-col items-center justify-center gap-2">
               <h2>{param.name}</h2>
               <Slider
                 min={param.min}

@@ -1,11 +1,11 @@
-import { useUserAudioStore } from "@/store/useraudio.store";
+import { useAudioStore } from "@/store/audio.store";
 import { ComponentPropsWithoutRef, useEffect, useRef } from "react";
 
 type SoundwaveCanvasProps = ComponentPropsWithoutRef<"canvas">;
 
 export function SoundwaveCanvas(props: SoundwaveCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const analyser = useUserAudioStore((store) => store.audioAnalyser);
+  const analyser = useAudioStore((store) => store.audioAnalyser);
 
   const visualizer = (canvas: HTMLCanvasElement, analyser: AnalyserNode) => {
     const ctx = canvas.getContext("2d");
@@ -43,6 +43,6 @@ export function SoundwaveCanvas(props: SoundwaveCanvasProps) {
     if (canvasRef.current) visualizer(canvasRef.current, analyser);
   }, [analyser]);
 
-  return <canvas className="h-full w-full" ref={canvasRef} {...props}></canvas>;
+  return <canvas className="size-full" ref={canvasRef} {...props}></canvas>;
 }
 export default SoundwaveCanvas;

@@ -2,19 +2,23 @@ import { createDevice, Device } from "@rnbo/js";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-type userAudioStoreType = {
+type audioStoreType = {
   audioContext: AudioContext | null;
   audioAnalyser: AnalyserNode | null;
-  instrus: Array<Device>;
+  instrus: Device[];
+  peerSound: MediaStreamAudioDestinationNode | null;
+  // params: Array<Array<ICreateDeviceParameters>>;
   setAudioContext: (context: AudioContext) => void;
   setInstru: (instru: Device) => void;
 };
 
-export const useUserAudioStore = create(
-  devtools<userAudioStoreType>((set) => ({
+export const useAudioStore = create(
+  devtools<audioStoreType>((set) => ({
     audioContext: null,
     audioAnalyser: null,
-    instrus: new Array(2),
+    instrus: new Array(1),
+    peerSound: null,
+    // params: new Array(2),
     setAudioContext: (audioContext: AudioContext) => {
       set((state) => {
         if (!state.audioContext) {
@@ -56,7 +60,8 @@ export const useUserAudioStore = create(
 export const setUserAudio = async () => {
   const ctx = new AudioContext();
   ctx.resume();
-  const instrus = useUserAudioStore.getState().instrus;
+  const instrus = useAudioStore.getState().instrus;
+  // const params = useAudioStore.getState().params;
   for (let i = 0; i < instrus.length; i++) {
     try {
       console.log("Loading instru", i);
@@ -67,9 +72,15 @@ export const setUserAudio = async () => {
       dependencies = dependencies.map((d: { id: string; file: string }) => (d.file ? Object.assign({}, d, { file: `./instru${i}/` + d.file }) : d));
       instrus[i] = await createDevice({ context: ctx, patcher: patcher }); // TOTO : Type of RNBO params : ICreateDeviceParameters
       if (dependencies.length) await instrus[i].loadDataBufferDependencies(dependencies);
+      // params[i] = instrus[i].parameters; // TODO pourquoi array/array/truc ?!
     } catch (e) {
       console.error(e);
     }
   }
-  useUserAudioStore.setState({ audioContext: ctx, audioAnalyser: ctx.createAnalyser(), instrus: instrus });
+  useAudioStore.setState({
+    audioContext: ctx,
+    audioAnalyser: ctx.createAnalyser(),
+    instrus: instrus,
+    peerSound: ctx.createMediaStreamDestination(),
+  });
 };
