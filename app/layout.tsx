@@ -1,6 +1,15 @@
-import { UserPagination } from "@/components/userPagination";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,7 +35,27 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${geistSans.variable} ${geistMono.variable} dark overflow-hidden antialiased`}>
-        <UserPagination />
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <Link href="/" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>HOME</NavigationMenuLink>
+              </Link>
+              <NavigationMenuTrigger>INSTRUS</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <Link href="/user/instru?n=0" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>Instru0</NavigationMenuLink>
+                </Link>
+                <Link href="/user/instru?n=0" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>Instru1</NavigationMenuLink>
+                </Link>
+              </NavigationMenuContent>
+              <Link href="/user/facestime" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>FACESTIME</NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
         {children}
       </body>
     </html>

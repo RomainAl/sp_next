@@ -94,59 +94,64 @@ export const setPeer = () => {
     console.log("MY PEER ID IS: " + id);
 
     // DATA :
-    if (id !== adminId) peerDataConnection();
+    // if (id !== adminId) peerDataConnection();
 
-    peer.on("connection", (peerData) => {
-      peerData.on("open", () => {
-        peerData.on("data", (data) => {
-          console.log("Received", data);
-        });
-        peerData.on("close", () => {
-          console.log("(ZUSTAND) CLOSE DATA FROM " + peerData.peer);
-          useWebrtcStore.setState((state) => ({
-            peersData: state.peersData.filter((p) => p.peer !== peerData.peer),
-          }));
-        });
-        peerData.on("error", () => {
-          console.log("(ZUSTAND) ERROR DATA FROM " + peerData.peer);
-          useWebrtcStore.setState((state) => ({
-            peersData: state.peersData.filter((p) => p.peer !== peerData.peer),
-          }));
-        });
-        if (id === adminId) {
-          // TODO !!!!!
-          useWebrtcStore.setState((state) => ({
-            peersData: [...state.peersData, peerData],
-          }));
-        } else {
-          useWebrtcStore.setState({ peerData });
-        }
-      });
-    });
+    // ONLY FOR ADMIN !! USER IS IN LAYOUT USER
 
-    // MEDIA :
-    peer.on("call", (peerMedia) => {
-      peerMedia.answer();
-      peerMedia.on("stream", () => {
-        console.log("(ZUSTAND) RECEIVE STREAM FROM " + peerMedia.peer);
-      });
-      peerMedia.on("close", () => {
-        console.log("(ZUSTAND) CLOSE STREAM FROM " + peerMedia.peer);
-        useWebrtcStore.setState((state) => ({
-          peersMedia: state.peersMedia.filter((p) => p.peer !== peerMedia.peer),
-        }));
-      });
-      peerMedia.on("error", () => {
-        console.log("(ZUSTAND) ERROR STREAM FROM " + peerMedia.peer);
-        useWebrtcStore.setState((state) => ({
-          peersMedia: state.peersMedia.filter((p) => p.peer !== peerMedia.peer),
-        }));
+    if (id === adminId) {
+      peer.on("connection", (peerData) => {
+        peerData.on("open", () => {
+          peerData.on("data", (data) => {
+            console.log("Received", data);
+          });
+          peerData.on("close", () => {
+            console.log("(ZUSTAND) CLOSE DATA FROM " + peerData.peer);
+            useWebrtcStore.setState((state) => ({
+              peersData: state.peersData.filter((p) => p.peer !== peerData.peer),
+            }));
+          });
+          peerData.on("error", () => {
+            console.log("(ZUSTAND) ERROR DATA FROM " + peerData.peer);
+            useWebrtcStore.setState((state) => ({
+              peersData: state.peersData.filter((p) => p.peer !== peerData.peer),
+            }));
+          });
+          if (id === adminId) {
+            // TODO !!!!!
+            useWebrtcStore.setState((state) => ({
+              peersData: [...state.peersData, peerData],
+            }));
+          } else {
+            useWebrtcStore.setState({ peerData });
+          }
+        });
       });
 
-      useWebrtcStore.setState((state) => ({
-        peersMedia: [...state.peersMedia, peerMedia],
-      }));
-    });
+      // MEDIA :
+      peer.on("call", (peerMedia) => {
+        console.log(peerMedia.peer);
+        console.log(id);
+        peerMedia.answer();
+        peerMedia.on("stream", () => {
+          console.log("(ZUSTAND) RECEIVE STREAM FROM " + peerMedia.peer);
+          useWebrtcStore.setState((state) => ({
+            peersMedia: [...state.peersMedia.filter((p) => p.peer !== peerMedia.peer), peerMedia],
+          }));
+        });
+        peerMedia.on("close", () => {
+          console.log("(ZUSTAND) CLOSE STREAM FROM " + peerMedia.peer);
+          useWebrtcStore.setState((state) => ({
+            peersMedia: [...state.peersMedia.filter((p) => p.peer !== peerMedia.peer)],
+          }));
+        });
+        peerMedia.on("error", () => {
+          console.log("(ZUSTAND) ERROR STREAM FROM " + peerMedia.peer);
+          useWebrtcStore.setState((state) => ({
+            peersMedia: [...state.peersMedia.filter((p) => p.peer !== peerMedia.peer)],
+          }));
+        });
+      });
+    }
   });
 
   useWebrtcStore.setState({ peer });
@@ -164,40 +169,47 @@ export const peerDataConnection = () => {
   useWebrtcStore.setState({ peerData });
 };
 
-export const peersDataConnection = async () => {
-  const peer = useWebrtcStore.getState().peer;
-  fetch("http://localhost:9000/socket/peerjs/peers")
-    .then((r) => r.json())
-    .then((ids) =>
-      ids.forEach((id: string) => {
-        if (id === "admin") {
-          return;
-        } else {
-          console.log(id);
-          const peerData = peer?.connect(id);
-          peerData?.on("open", () => {
-            peerData?.send("Hello! I'm admin n°" + peer?.id);
-            useWebrtcStore.setState((state) => ({
-              peersData: [...state.peersData, peerData],
-            }));
-          });
-        }
-      })
-    );
-}; // TODO
+// export const peersDataConnection = async () => {
+//   const peer = useWebrtcStore.getState().peer;
+//   fetch("http://localhost:9000/socket/peerjs/peers")
+//     .then((r) => r.json())
+//     .then((ids) =>
+//       ids.forEach((id: string) => {
+//         if (id === "admin") {
+//           return;
+//         } else {
+//           console.log(id);
+//           const peerData = peer?.connect(id);
+//           peerData?.on("open", () => {
+//             peerData?.send("Hello! I'm admin n°" + peer?.id);
+//             useWebrtcStore.setState((state) => ({
+//               peersData: [...state.peersData, peerData],
+//             }));
+//           });
+//         }
+//       })
+//     );
+// };
 
 export const peerMediaCall = async () => {
   const stream = useWebrtcStore.getState().stream;
-  if (stream != null) {
-    const peer = useWebrtcStore.getState().peer;
-    const peerMedia = peer?.call(adminId, stream);
-    useWebrtcStore.setState({ peerMedia });
+  const peerMedia = useWebrtcStore.getState().peerMedia;
+  if (stream != null && stream?.active) {
+    if (peerMedia && peerMedia?.open) {
+      peerMedia?.peerConnection.getSenders().forEach((s, i) => s.replaceTrack(stream.getTracks()[i]));
+    } else {
+      const peer = useWebrtcStore.getState().peer;
+      const peerMedia = peer?.call(adminId, stream);
+      useWebrtcStore.setState({ peerMedia });
+    }
   } else {
     const constraints = useWebrtcStore.getState().mediaconstraints;
-    navigator.mediaDevices.getUserMedia(constraints[0]).then((stream) => {
-      useWebrtcStore.setState({ stream });
-      peerMediaCall();
-    });
+    navigator.mediaDevices
+      .getUserMedia(constraints[0])
+      .then((stream) => {
+        useWebrtcStore.setState({ stream });
+      })
+      .then(() => peerMediaCall());
   }
 };
 

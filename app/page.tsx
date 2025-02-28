@@ -1,5 +1,6 @@
 "use client";
 
+import { LogoSP } from "@/components/logoSP";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
@@ -38,7 +39,6 @@ export default function Home() {
         progress: 0.99,
         className: "rounded-lg bg-accent text-sm",
       });
-      await new Promise((r) => setTimeout(r, 1000));
       toast.dismiss(toast_loading.current);
       if (name === "admin") {
         router.push("/admin/facestime");
@@ -64,11 +64,7 @@ export default function Home() {
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-16">
       <div className="flex w-3/5 max-w-sm flex-col items-center justify-center">
-        <svg viewBox="0 0 200 150" fill="none" className="stroke-[15]">
-          <path d="M20 140 A 90 90 0 1 1 180 140" className="stroke-accent" />
-          <path d="M20 140 A 90 90 0 1 1 180 57.5" className="stroke-primary" />
-          <line x1="120" y1="95" x2="182" y2="48" className="stroke-primary" />
-        </svg>
+        <LogoSP />
         <p className="text-2xl italic text-primary">smart.phonics</p>
       </div>
 

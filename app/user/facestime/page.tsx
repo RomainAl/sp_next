@@ -18,7 +18,7 @@ export default function Home() {
   };
 
   const handleData = () => {
-    peerData?.send({ maman: "tamemere3" });
+    if (peerData?.open) peerData?.send({ maman: "tamemere3" });
     console.log(peerData);
   };
 
@@ -36,10 +36,15 @@ export default function Home() {
     if (myVideoRef.current) {
       myVideoRef.current.srcObject = stream;
     }
+    return () => {
+      stream?.getTracks().forEach((track) => {
+        track.stop();
+      });
+    };
   }, [stream]);
 
   return (
-    <div className="flex flex-col items-center justify-center p-12">
+    <div className="flex h-screen w-screen flex-col items-center justify-center gap-7">
       <p> ID: {peerData?.peer}</p>
       <video className="w-full" playsInline ref={myVideoRef} autoPlay />
       <button onClick={handleStream}>stream</button>

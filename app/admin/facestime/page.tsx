@@ -1,6 +1,6 @@
 "use client";
 
-import { peersDataConnection, useWebrtcStore } from "@/store/webrtc.store";
+import { useWebrtcStore } from "@/store/webrtc.store";
 import { useEffect, useRef } from "react";
 
 export default function Home() {
@@ -13,11 +13,14 @@ export default function Home() {
   const handleData = () => {
     console.log(peersData);
     console.log(peersMedia);
-    peersDataConnection();
+    // peersDataConnection();
     peersData?.forEach((peerData) => {
       if (peerData.open) peerData.send({ href: "/instru?n=0" });
+      // if (peerData.open) peerData.send({ call: { call: true, href: "/facestime" } });
+      // if (peerData.open) peerData.send({ message: "tamere" });
     });
   };
+
   useEffect(() => {
     console.log("USE EFFECT RENDDER");
     peersMedia.forEach((peerMedia, i) =>
