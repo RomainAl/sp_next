@@ -15,8 +15,8 @@ export default function Home() {
     console.log(peersMedia);
     // peersDataConnection();
     peersData?.forEach((peerData) => {
-      if (peerData.open) peerData.send({ href: "/instru?n=0" });
-      // if (peerData.open) peerData.send({ call: { call: true, href: "/facestime" } });
+      // if (peerData.open) peerData.send({ href: "/instru?n=0" });
+      if (peerData.open) peerData.send({ call: { call: true, href: "/facestime" } });
       // if (peerData.open) peerData.send({ message: "tamere" });
     });
   };

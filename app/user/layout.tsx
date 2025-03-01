@@ -26,9 +26,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   if (callValidation) {
     peerMediaCall();
-    // setCall(false);
-    setCall(false);
-    setCallValidation(false);
+    setCall((p) => !p);
+    setCallValidation((p) => !p);
     // if (adminData.current?.call?.href) router.push("/user/" + adminData.current.call.href);
   }
 
