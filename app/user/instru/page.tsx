@@ -11,8 +11,7 @@ export default function Home() {
   const searchParams = useSearchParams();
   const audioContext = useAudioStore((store) => store.audioContext);
   const intruNb: number = searchParams.has("n") ? Number(searchParams.get("n")) : 0;
-  const instrus = useAudioStore((store) => store.instrus);
-  const instru = instrus[intruNb];
+  const instru = useAudioStore((store) => store.instrus[intruNb]);
 
   const analyser = useAudioStore((store) => store.audioAnalyser);
 
@@ -30,15 +29,14 @@ export default function Home() {
     }
     analyser.disconnect();
     audioContext.resume();
-    instrus.map((instru) => instru.node.disconnect());
     instru.node.connect(analyser);
     analyser.connect(audioContext.destination);
     return () => {
       analyser.disconnect();
-      instrus.map((instru) => instru.node.disconnect());
+      instru.node.disconnect();
       audioContext.suspend();
     };
-  }, [audioContext, instrus, instru, analyser]);
+  }, [audioContext, instru, analyser]);
 
   return (
     <>

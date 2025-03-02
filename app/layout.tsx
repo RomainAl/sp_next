@@ -53,6 +53,9 @@ export default function RootLayout({
               <Link href="/user/facestime" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>FACESTIME</NavigationMenuLink>
               </Link>
+              <Link href="/admin/miditest" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>MIDI</NavigationMenuLink>
+              </Link>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

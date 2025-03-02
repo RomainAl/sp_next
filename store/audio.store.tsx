@@ -72,6 +72,7 @@ export const setUserAudio = async () => {
       dependencies = dependencies.map((d: { id: string; file: string }) => (d.file ? Object.assign({}, d, { file: `./instru${i}/` + d.file }) : d));
       instrus[i] = await createDevice({ context: ctx, patcher: patcher }); // TOTO : Type of RNBO params : ICreateDeviceParameters
       if (dependencies.length) await instrus[i].loadDataBufferDependencies(dependencies);
+      console.log(instrus[i].parameters);
       // params[i] = instrus[i].parameters; // TODO pourquoi array/array/truc ?!
     } catch (e) {
       console.error(e);

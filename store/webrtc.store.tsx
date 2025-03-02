@@ -1,10 +1,14 @@
 import { nanoid } from "nanoid";
 import type { DataConnection, MediaConnection } from "peerjs";
 import Peer, { util } from "peerjs";
+import { createRef, RefObject } from "react";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 type webrtcStoreType = {
+  ref: RefObject<boolean | null>;
+  href: string | null;
+  top: boolean;
   username: string;
   id: string;
   peer: Peer | null;
@@ -16,11 +20,14 @@ type webrtcStoreType = {
   mediaconstraints: MediaStreamConstraints[];
 };
 
-const randomId = "ID_" + nanoid(6);
+const randomId = "ID" + nanoid(6);
 const adminId = "admin";
 
 export const useWebrtcStore = create(
   devtools<webrtcStoreType>(() => ({
+    ref: createRef<boolean>(),
+    href: null,
+    top: false,
     username: randomId,
     id: randomId + String(Date.now()),
     // username: localStorage.getItem("username") ?? randomId,
@@ -99,10 +106,11 @@ export const setPeer = () => {
     // ONLY FOR ADMIN !! USER IS IN LAYOUT USER
 
     if (id === adminId) {
+      console.log("toto");
       peer.on("connection", (peerData) => {
         peerData.on("open", () => {
           peerData.on("data", (data) => {
-            console.log("Received", data);
+            console.log("Received", { id: peerData.peer, data: data });
           });
           peerData.on("close", () => {
             console.log("(ZUSTAND) CLOSE DATA FROM " + peerData.peer);
@@ -117,7 +125,7 @@ export const setPeer = () => {
             }));
           });
           if (id === adminId) {
-            // TODO !!!!!
+            console.log("pourquoi 2 ???");
             useWebrtcStore.setState((state) => ({
               peersData: [...state.peersData, peerData],
             }));
@@ -129,8 +137,6 @@ export const setPeer = () => {
 
       // MEDIA :
       peer.on("call", (peerMedia) => {
-        console.log(peerMedia.peer);
-        console.log(id);
         peerMedia.answer();
         peerMedia.on("stream", () => {
           console.log("(ZUSTAND) RECEIVE STREAM FROM " + peerMedia.peer);
@@ -163,9 +169,6 @@ export const peerDataConnection = () => {
   const peerData = peer?.connect(adminId);
   console.log(peer);
   console.log("CONNECT TO ADMIN !");
-  peerData?.on("open", () => {
-    peerData?.send("Hello! I'm client n°" + peer?.id);
-  });
   useWebrtcStore.setState({ peerData });
 };
 
@@ -218,4 +221,8 @@ export const setStream = async () => {
   navigator.mediaDevices.getUserMedia(constraints[0]).then((stream) => {
     useWebrtcStore.setState({ stream });
   });
+};
+
+export const setHref = (href: string | null) => {
+  useWebrtcStore.setState({ href });
 };

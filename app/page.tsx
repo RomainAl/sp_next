@@ -60,7 +60,7 @@ export default function Home() {
   }, "");
 
   console.log(message);
-
+  // const value = 0;
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-16">
       <div className="flex w-3/5 max-w-sm flex-col items-center justify-center">

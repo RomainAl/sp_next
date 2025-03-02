@@ -4,6 +4,7 @@ import { ComponentPropsWithoutRef, useEffect, useRef } from "react";
 type SoundwaveCanvasProps = ComponentPropsWithoutRef<"canvas">;
 
 export function SoundwaveCanvas(props: SoundwaveCanvasProps) {
+  console.log("RENDER CANVAS !!");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const analyser = useAudioStore((store) => store.audioAnalyser);
 
@@ -43,6 +44,6 @@ export function SoundwaveCanvas(props: SoundwaveCanvasProps) {
     if (canvasRef.current) visualizer(canvasRef.current, analyser);
   }, [analyser]);
 
-  return <canvas className="size-full" ref={canvasRef} {...props}></canvas>;
+  return <canvas ref={canvasRef} {...props}></canvas>;
 }
 export default SoundwaveCanvas;

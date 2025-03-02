@@ -34,6 +34,8 @@ export default function Home() {
 
   useEffect(() => {
     if (myVideoRef.current) {
+      console.log("peerMedia : ");
+      console.log(peerData);
       myVideoRef.current.srcObject = stream;
     }
     return () => {
@@ -41,7 +43,7 @@ export default function Home() {
         track.stop();
       });
     };
-  }, [stream]);
+  }, [stream, peerData]);
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-7">
@@ -55,6 +57,7 @@ export default function Home() {
       <button
         onClick={() => {
           console.log(peerData);
+          console.log(peerMedia);
         }}
       >
         console peer
