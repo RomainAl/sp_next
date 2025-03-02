@@ -123,9 +123,14 @@ export const peerDataConn = async () => {
       peerData.on("data", (data) => {
         console.log(peerData.peer + " - sent mess :");
         console.log(data);
-        const toto = data as messDataType;
-        if (toto.goto) {
-          useMessUserStore.setState({ goto: toto.goto });
+        const mess = data as messDataType;
+        console.log(mess);
+        if (mess.goto) {
+          useMessUserStore.setState({ goto: mess.goto });
+        }
+        if (mess.getStream) {
+          console.log("totototot");
+          useMessUserStore.setState({ getStream: mess.getStream });
         }
       });
 

@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const goto = useMessUserStore((store) => store.goto);
   const getStream = useMessUserStore((store) => store.getStream);
   const router = useRouter();
-
+  console.log(getStream);
   useEffect(() => {
     if (goto) router.push("/user/" + goto);
   }, [goto, router]);
@@ -31,9 +31,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <NavigationMenuItem>
             <Link href="/" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>HOME</NavigationMenuLink>
-            </Link>
-            <Link href="/admin" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>ADMIN</NavigationMenuLink>
             </Link>
             <NavigationMenuTrigger>INSTRUS</NavigationMenuTrigger>
             <NavigationMenuContent>
