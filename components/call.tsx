@@ -6,14 +6,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { peerMediaCall, setGoto, useMessUserStore } from "@/store/webrtc.user.store";
 import { PhoneIncoming, PhoneOff } from "lucide-react";
 import { useState } from "react";
 import { LogoSP } from "./logoSP";
 import { Button } from "./ui/button";
 
-export function Call({ setCallValidation }: { setCallValidation: (callValidation: boolean) => void }) {
+export function Call() {
   const [open, setOpen] = useState<boolean>(true);
-
+  const goto = useMessUserStore((store) => store.getStream?.goto);
   return (
     <AlertDialog open={open}>
       {/* <AlertDialogTrigger asChild>
@@ -34,7 +35,8 @@ export function Call({ setCallValidation }: { setCallValidation: (callValidation
             variant={"default"}
             size={"circle"}
             onClick={() => {
-              setCallValidation(true);
+              peerMediaCall();
+              if (goto) setGoto(goto);
               setOpen(false);
             }}
           >

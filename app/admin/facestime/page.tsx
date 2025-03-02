@@ -1,32 +1,26 @@
 "use client";
 
-import { useWebrtcStore } from "@/store/webrtc.store";
+import { useWebrtcAdminStore } from "@/store/webrtc.admin.store";
 import { useEffect, useRef } from "react";
 
 export default function Home() {
   const callingVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  // const callingVideoRef = useRef<HTMLVideoElement>(null);
-  const peersData = useWebrtcStore((store) => store.peersData);
-  const peersMedia = useWebrtcStore((store) => store.peersMedia);
+  const userS = useWebrtcAdminStore((store) => store.userS);
   const handleCall = () => {};
 
   const handleData = () => {
-    console.log(peersData);
-    console.log(peersMedia);
-    // peersDataConnection();
-    peersData?.forEach((peerData) => {
-      // if (peerData.open) peerData.send({ href: "/instru?n=0" });
-      // if (peerData.open) peerData.send({ call: { call: true, href: "/facestime" } });
-      if (peerData.open) peerData.send({ href: "/facestime" });
+    console.log(userS);
+    userS.forEach((user) => {
+      if (user.peerData?.open) user.peerData?.send({ goto: "instru?n=0" });
+      if (user.peerData?.open) user.peerData?.send({ getStream: { call: true, goto: "/facestime" } });
     });
   };
-  console.log("render outside useEffect !");
 
+  console.log("Render outside useEffect !");
   useEffect(() => {
-    console.log("render useEffect !");
-    console.log("USE EFFECT RENDDER");
-    peersMedia.forEach((peerMedia, i) =>
-      peerMedia.on("stream", (stream) => {
+    console.log("Render useEffect !");
+    userS.forEach((user, i) =>
+      user.peerMedia?.on("stream", (stream) => {
         console.log("STREEAMM ENTER !");
         console.log(stream);
         if (callingVideoRefs.current && callingVideoRefs.current[i]) {
@@ -34,16 +28,16 @@ export default function Home() {
         }
       })
     );
-  }, [peersMedia]);
+  }, [userS]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <button onClick={handleCall}>call</button>
       <button onClick={handleData}>data</button>
       <div className="flex size-full flex-wrap justify-evenly gap-4">
-        {peersMedia.map((peerMedia, i) => (
-          <div key={peerMedia.peer} className=" flex w-1/3 flex-col items-center gap-4 rounded-lg border border-orange-400">
-            <p>{peerMedia.peer}</p>
+        {userS.map((user, i) => (
+          <div key={user.id} className=" flex w-1/3 flex-col items-center gap-4 rounded-lg border border-orange-400">
+            <p>{user.name}</p>
             <video
               ref={(input) => {
                 callingVideoRefs.current[i] = input;

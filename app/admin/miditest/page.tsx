@@ -2,7 +2,7 @@
 import SoundwaveCanvas from "@/components/soundwaveCanvas";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { useAudioStore } from "@/store/audio.store";
+import { useAudioStore } from "@/store/audio.user.store";
 import { MIDIVal, MIDIValInput } from "@midival/core";
 import { useEffect, useRef, useState } from "react";
 import { useWindowSize } from "usehooks-ts";

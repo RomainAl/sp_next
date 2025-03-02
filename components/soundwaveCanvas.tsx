@@ -1,10 +1,10 @@
-import { useAudioStore } from "@/store/audio.store";
+import { useAudioStore } from "@/store/audio.user.store";
 import { ComponentPropsWithoutRef, useEffect, useRef } from "react";
 
 type SoundwaveCanvasProps = ComponentPropsWithoutRef<"canvas">;
 
 export function SoundwaveCanvas(props: SoundwaveCanvasProps) {
-  console.log("RENDER CANVAS !!");
+  console.log("TODO : RENDER CANVAS - SoundwaveCanvas");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const analyser = useAudioStore((store) => store.audioAnalyser);
 

@@ -2,7 +2,7 @@
 
 import SoundwaveCanvas from "@/components/soundwaveCanvas";
 import { Slider } from "@/components/ui/slider";
-import { useAudioStore } from "@/store/audio.store";
+import { useAudioStore } from "@/store/audio.user.store";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useWindowSize } from "usehooks-ts";
@@ -28,9 +28,9 @@ export default function Home() {
       return;
     }
     analyser.disconnect();
-    audioContext.resume();
     instru.node.connect(analyser);
     analyser.connect(audioContext.destination);
+    audioContext.resume();
     return () => {
       analyser.disconnect();
       instru.node.disconnect();

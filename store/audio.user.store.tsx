@@ -16,7 +16,7 @@ export const useAudioStore = create(
   devtools<audioStoreType>((set) => ({
     audioContext: null,
     audioAnalyser: null,
-    instrus: new Array(1),
+    instrus: new Array(2),
     peerSound: null,
     // params: new Array(2),
     setAudioContext: (audioContext: AudioContext) => {
@@ -64,7 +64,6 @@ export const setUserAudio = async () => {
   // const params = useAudioStore.getState().params;
   for (let i = 0; i < instrus.length; i++) {
     try {
-      console.log("Loading instru", i);
       const rawPatcher = await fetch(`instru${i}/patch.export.json`);
       const patcher = await rawPatcher.json();
       const dependenciesResponse = await fetch(`instru${i}/dependencies.json`);
@@ -72,7 +71,6 @@ export const setUserAudio = async () => {
       dependencies = dependencies.map((d: { id: string; file: string }) => (d.file ? Object.assign({}, d, { file: `./instru${i}/` + d.file }) : d));
       instrus[i] = await createDevice({ context: ctx, patcher: patcher }); // TOTO : Type of RNBO params : ICreateDeviceParameters
       if (dependencies.length) await instrus[i].loadDataBufferDependencies(dependencies);
-      console.log(instrus[i].parameters);
       // params[i] = instrus[i].parameters; // TODO pourquoi array/array/truc ?!
     } catch (e) {
       console.error(e);

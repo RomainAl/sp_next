@@ -1,13 +1,13 @@
 "use client";
 
-import { peerMediaCall, setStream, useWebrtcStore } from "@/store/webrtc.store";
+import { peerMediaCall, setStream, useWebrtcUserStore } from "@/store/webrtc.user.store";
 import { useEffect, useRef } from "react";
 
 export default function Home() {
   const myVideoRef = useRef<HTMLVideoElement>(null);
-  const peerData = useWebrtcStore((store) => store.peerData);
-  const peerMedia = useWebrtcStore((store) => store.peerMedia);
-  const stream = useWebrtcStore((store) => store.stream);
+  const peerData = useWebrtcUserStore((store) => store.peerData);
+  const peerMedia = useWebrtcUserStore((store) => store.peerMedia);
+  const stream = useWebrtcUserStore((store) => store.stream);
 
   const handleStream = async () => {
     await setStream();
