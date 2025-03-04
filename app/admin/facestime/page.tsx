@@ -6,13 +6,14 @@ import { useEffect, useRef } from "react";
 export default function Home() {
   const callingVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const userS = useWebrtcAdminStore((store) => store.userS);
-  const handleCall = () => {};
+  const handleCall = () => {
+    console.log(userS);
+  };
 
   const handleData = () => {
-    console.log(userS);
     userS.forEach((user) => {
-      // if (user.peerData?.open) user.peerData?.send({ goto: "instru?n=0" });
-      if (user.peerData?.open) user.peerData?.send({ getStream: { call: true, goto: "/facestime" } });
+      if (user.peerData?.open) user.peerData?.send({ goto: "instru?n=0" });
+      // if (user.peerData?.open) user.peerData?.send({ getStream: { call: true, goto: "/facestime" } });
     });
   };
 

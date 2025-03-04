@@ -9,17 +9,18 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { useMessUserStore } from "@/store/webrtc.user.store";
+import { useMessUserStore } from "@/store/mess.user.store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Slide, ToastContainer } from "react-toastify";
+import { useShallow } from "zustand/react/shallow";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const goto = useMessUserStore((store) => store.goto);
-  const getStream = useMessUserStore((store) => store.getStream);
+  const getStream = useMessUserStore(useShallow((store) => store.getStream));
   const router = useRouter();
-  console.log(getStream);
+
   useEffect(() => {
     if (goto) router.push("/user/" + goto);
   }, [goto, router]);
@@ -40,12 +41,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Link href="/user/instru?n=1" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTRU 1</NavigationMenuLink>
               </Link>
+              <Link href="/user/instru?n=2" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTRU 1</NavigationMenuLink>
+              </Link>
             </NavigationMenuContent>
             <Link href="/user/facestime" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>FACESTIME</NavigationMenuLink>
             </Link>
-            <Link href="/admin/miditest" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>MIDI</NavigationMenuLink>
+            <Link href="/user/insta" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTA</NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
         </NavigationMenuList>

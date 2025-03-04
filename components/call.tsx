@@ -6,7 +6,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { peerMediaCall, setGoto, useMessUserStore } from "@/store/webrtc.user.store";
+import { setGoto, useMessUserStore } from "@/store/mess.user.store";
+import { peerMediaCall } from "@/store/webrtc.user.store";
 import { PhoneIncoming, PhoneOff } from "lucide-react";
 import { useState } from "react";
 import { LogoSP } from "./logoSP";

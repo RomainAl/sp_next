@@ -4,6 +4,7 @@ import { LogoSP } from "@/components/logoSP";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { useMessAdminStore } from "@/store/mess.admin.store";
 import { createPeer, useWebrtcAdminStore } from "@/store/webrtc.admin.store";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -11,13 +12,14 @@ import { useActionState } from "react";
 
 export default function Home() {
   const peer = useWebrtcAdminStore((store) => store.peer);
+  const currentPage = useMessAdminStore((store) => store.currentPage);
   const router = useRouter();
   if (!peer) createPeer();
   const [message, submitaction, pending] = useActionState(async (_: unknown, formData: FormData) => {
     try {
-      const name: string = formData.get("password") as string;
-      if (name !== "admin") return "error";
-      router.push("/admin/facestime");
+      const password: string = formData.get("password") as string;
+      if (password !== "") return "error";
+      router.push(`/admin/${currentPage}`);
       return "success";
     } catch (e) {
       if (e instanceof Error) {

@@ -16,7 +16,7 @@ export const useAudioStore = create(
   devtools<audioStoreType>((set) => ({
     audioContext: null,
     audioAnalyser: null,
-    instrus: new Array(2),
+    instrus: new Array(3),
     peerSound: null,
     // params: new Array(2),
     setAudioContext: (audioContext: AudioContext) => {
@@ -64,11 +64,12 @@ export const setUserAudio = async () => {
   // const params = useAudioStore.getState().params;
   for (let i = 0; i < instrus.length; i++) {
     try {
-      const rawPatcher = await fetch(`instru${i}/patch.export.json`);
+      const path = "instrus/instru";
+      const rawPatcher = await fetch(`${path}${i}/patch.export.json`);
       const patcher = await rawPatcher.json();
-      const dependenciesResponse = await fetch(`instru${i}/dependencies.json`);
+      const dependenciesResponse = await fetch(`${path}${i}/dependencies.json`);
       let dependencies = await dependenciesResponse.json();
-      dependencies = dependencies.map((d: { id: string; file: string }) => (d.file ? Object.assign({}, d, { file: `./instru${i}/` + d.file }) : d));
+      dependencies = dependencies.map((d: { id: string; file: string }) => (d.file ? Object.assign({}, d, { file: `${path}${i}/` + d.file }) : d));
       instrus[i] = await createDevice({ context: ctx, patcher: patcher }); // TOTO : Type of RNBO params : ICreateDeviceParameters
       if (dependencies.length) await instrus[i].loadDataBufferDependencies(dependencies);
       // params[i] = instrus[i].parameters; // TODO pourquoi array/array/truc ?!

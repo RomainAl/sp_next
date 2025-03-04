@@ -1,7 +1,8 @@
 import type { DataConnection, MediaConnection } from "peerjs";
-import Peer, { util } from "peerjs";
+import Peer from "peerjs";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { useMessAdminStore } from "./mess.admin.store";
 
 type userType = { id: string; name: string; peerData: DataConnection | null; peerMedia: MediaConnection | null };
 
@@ -26,8 +27,8 @@ export const useWebrtcAdminStore = create(
 
 export const createPeer = async () => {
   // PEER :
-  if (!util.supports.data) throw new Error("E_01");
-  if (!util.supports.audioVideo) throw new Error("E_02");
+  // if (!util.supports.data) throw new Error("E_01");
+  // if (!util.supports.audioVideo) throw new Error("E_02");
   let peer = useWebrtcAdminStore.getState().peer;
   if (!peer) {
     peer = new Peer("admin", {
@@ -46,19 +47,16 @@ export const createPeer = async () => {
       console.log(peerData.peer + " - peerData is conn");
       peerData.on("open", () => {
         console.log(peerData.peer + " - peerData is open");
-        // TODO MOCHE
-        const user_ = useWebrtcAdminStore.getState().userS.find((u) => (u.id = peerData.peer));
-        const user: userType = { id: peerData.peer, name: user_?.name ?? "", peerData: peerData, peerMedia: null };
-        useWebrtcAdminStore.setState((state) => ({
-          userS: [...state.userS, user],
-        }));
+
         peerData.on("data", (data) => {
           console.log(peerData.peer + " - sent mess :");
           console.log(data);
-          const toto = data as userDataType;
-          if (toto.name) {
-            const user_ = useWebrtcAdminStore.getState().userS.find((u) => (u.id = peerData.peer));
-            const user: userType = { id: peerData.peer, name: toto.name, peerData: peerData, peerMedia: user_?.peerMedia ?? null };
+          const userData = data as userDataType;
+          if (userData.name) {
+            console.log("TODO : PEER MOCHE !");
+            peerData.send({ goto: useMessAdminStore.getState().currentPage });
+            const user_ = useWebrtcAdminStore.getState().userS.find((u) => u.id === peerData.peer);
+            const user: userType = { id: peerData.peer, name: userData.name, peerData: peerData, peerMedia: user_?.peerMedia ?? null };
             useWebrtcAdminStore.setState((state) => ({
               userS: [...state.userS.filter((p) => p.id !== peerData.peer), user],
             }));
@@ -86,7 +84,7 @@ export const createPeer = async () => {
       peerMedia.on("stream", () => {
         console.log(peerMedia.peer + " - is streaming");
         console.log("TODO : PEER MOCHE !");
-        const user_ = useWebrtcAdminStore.getState().userS.find((u) => (u.id = peerMedia.peer));
+        const user_ = useWebrtcAdminStore.getState().userS.find((u) => u.id === peerMedia.peer);
         const user: userType = { id: peerMedia.peer, name: user_?.name ?? "", peerData: user_?.peerData ?? null, peerMedia: peerMedia };
         useWebrtcAdminStore.setState((state) => ({ userS: [...state.userS.filter((p) => p.id !== peerMedia.peer), user] }));
       });

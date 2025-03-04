@@ -1,10 +1,8 @@
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
@@ -19,15 +17,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link href="/admin" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>ADMIN</NavigationMenuLink>
             </Link>
-            <NavigationMenuTrigger>INSTRUS</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <Link href="/admin/instru" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTRU 0</NavigationMenuLink>
-              </Link>
-              <Link href="/admin/instru" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTRU 1</NavigationMenuLink>
-              </Link>
-            </NavigationMenuContent>
+            <Link href="/admin/instru" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTRUS</NavigationMenuLink>
+            </Link>
+            <Link href="/admin/insta" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTA</NavigationMenuLink>
+            </Link>
             <Link href="/admin/facestime" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>FACESTIME</NavigationMenuLink>
             </Link>

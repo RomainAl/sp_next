@@ -1,8 +1,9 @@
 import { nanoid } from "nanoid";
 import type { DataConnection, MediaConnection } from "peerjs";
-import Peer, { util } from "peerjs";
+import Peer from "peerjs";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { messDataType, useMessUserStore } from "./mess.user.store";
 
 type webrtcUserStoreType = {
   username: string;
@@ -14,32 +15,14 @@ type webrtcUserStoreType = {
   mediaconstraints: MediaStreamConstraints[];
 };
 
-type messDataType = {
-  goto?: string;
-  message?: string;
-  getStream?: { call: boolean; goto: string } | undefined;
-};
-
-export const useMessUserStore = create(
-  devtools<messDataType>(() => ({
-    goto: undefined,
-    getStream: undefined,
-  }))
-);
-
-export const setGoto = (goto: string) => {
-  useMessUserStore.setState({ goto });
-};
-
 // WEBRTC :
-const randomId = "ID" + nanoid(6);
+const randomId = "ID" + nanoid(6) + String(Date.now());
 const adminId = "admin";
+
 export const useWebrtcUserStore = create(
   devtools<webrtcUserStoreType>(() => ({
-    username: randomId,
-    id: randomId + String(Date.now()),
-    // username: localStorage.getItem("username") ?? randomId,
-    // id: localStorage.getItem("id") ?? randomId + String(Date.now()),
+    username: "Elon",
+    id: randomId,
     peer: null,
     peerData: null,
     peerMedia: null,
@@ -90,8 +73,9 @@ export const setUserName = (username: string) => {
 };
 
 export const createPeer = async () => {
-  if (!util.supports.data) throw new Error("E_01");
-  if (!util.supports.audioVideo) throw new Error("E_02");
+  // if (!util.supports.data) throw new Error("E_01");
+  // if (!util.supports.audioVideo) throw new Error("E_02");
+
   let peer = useWebrtcUserStore.getState().peer;
   if (!peer) {
     peer = new Peer(useWebrtcUserStore.getState().id, {
@@ -114,46 +98,47 @@ export const peerDataConn = async () => {
   if (!peer) createPeer();
 
   if (peer && peer.open) {
-    const peerData = peer.connect(adminId);
-    peerData.on("open", () => {
-      console.log(peerData.peer + " - peerData is open");
+    const peerData_ = useWebrtcUserStore.getState().peerData;
+    if (!peerData_ || !peerData_.open) {
+      const peerData = peer.connect(adminId);
+      peerData.on("open", () => {
+        console.log(peerData.peer + " - peerData is open");
 
-      peerData.send({ conn: "Connected !", name: useWebrtcUserStore.getState().username });
+        peerData.send({ conn: "Connected !", name: useWebrtcUserStore.getState().username });
 
-      peerData.on("data", (data) => {
-        console.log(peerData.peer + " - sent mess :");
-        console.log(data);
-        const mess = data as messDataType;
-        console.log(mess);
-        if (mess.goto) {
-          useMessUserStore.setState({ goto: mess.goto });
-        }
-        if (mess.getStream) {
-          console.log("totototot");
-          useMessUserStore.setState({ getStream: mess.getStream });
-        }
+        peerData.on("data", (data) => {
+          console.log(peerData.peer + " - sent mess :");
+          console.log(data);
+          const mess = data as messDataType;
+          if (mess.goto) {
+            useMessUserStore.setState({ goto: mess.goto });
+          }
+          if (mess.getStream) {
+            useMessUserStore.setState({ getStream: mess.getStream });
+          }
+        });
+
+        peerData.on("close", () => {
+          console.log(peerData.peer + " - peerData is closed");
+          try {
+            peerDataConn();
+          } catch (e) {
+            console.log(e);
+          }
+        });
+
+        peerData.on("error", (e) => {
+          console.log(peerData.peer + " - peerData is closed (error) : ");
+          console.log(e.message);
+          try {
+            peerDataConn();
+          } catch (e) {
+            console.log(e);
+          }
+        });
+        useWebrtcUserStore.setState({ peerData });
       });
-
-      peerData.on("close", () => {
-        console.log(peerData.peer + " - peerData is closed");
-        try {
-          peerDataConn();
-        } catch (e) {
-          console.log(e);
-        }
-      });
-
-      peerData.on("error", (e) => {
-        console.log(peerData.peer + " - peerData is closed (error) : ");
-        console.log(e.message);
-        try {
-          peerDataConn();
-        } catch (e) {
-          console.log(e);
-        }
-      });
-      useWebrtcUserStore.setState({ peerData });
-    });
+    }
   }
 };
 
