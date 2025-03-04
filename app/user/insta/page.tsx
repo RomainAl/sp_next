@@ -11,22 +11,19 @@ export default function Home() {
   const ref = useRef<HTMLDivElement>(null);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (!api) {
       return;
     }
     console.log("GoUseEffect");
-    console.log(count);
     console.log(current);
-    setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap() + 1);
 
     api.on("select", () => {
       setCurrent(api.selectedScrollSnap() + 1);
     });
-  }, [api, count, current]);
+  }, [api, current]);
 
   useEffect(() => {
     if (ref.current) ref.current.style.height = `${height}px`;
