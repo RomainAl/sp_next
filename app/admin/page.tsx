@@ -4,6 +4,7 @@ import { LogoSP } from "@/components/logoSP";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { setAdminAudio } from "@/store/audio.admin.store";
 import { useMessAdminStore } from "@/store/mess.admin.store";
 import { createPeer, useWebrtcAdminStore } from "@/store/webrtc.admin.store";
 import { ArrowRight } from "lucide-react";
@@ -19,6 +20,7 @@ export default function Home() {
     try {
       const password: string = formData.get("password") as string;
       if (password !== "") return "error";
+      setAdminAudio();
       router.push(`/admin/${goto}`);
       return "success";
     } catch (e) {

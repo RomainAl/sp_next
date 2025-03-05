@@ -51,6 +51,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link href="/user/insta" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTA</NavigationMenuLink>
             </Link>
+            <Link href="/user/test" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>TEST</NavigationMenuLink>
+            </Link>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>

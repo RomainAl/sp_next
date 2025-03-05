@@ -1,6 +1,6 @@
 "use client";
 
-import SoundwaveCanvas from "@/components/soundwaveCanvas";
+import { SoundwaveCanvas } from "@/components/soundwaveCanvas";
 import { Slider } from "@/components/ui/slider";
 import { useAudioUserStore } from "@/store/audio.user.store";
 import { useSearchParams } from "next/navigation";
@@ -32,9 +32,9 @@ export default function Home() {
     analyser.connect(audioContext.destination);
     audioContext.resume();
     return () => {
-      analyser.disconnect();
-      instru.node.disconnect();
-      audioContext.suspend();
+      analyser?.disconnect();
+      instru?.node.disconnect();
+      audioContext?.suspend();
     };
   }, [audioContext, instru, analyser]);
 
@@ -44,7 +44,6 @@ export default function Home() {
         <p>Instru n°{intruNb}</p>
         <div className="flex w-2/3 flex-col rounded-full border border-primary/50 bg-background shadow transition-colors">
           <SoundwaveCanvas width={width} height={width / 5} />
-          {/* <canvas ref={canvasRef} className="h-full w-full" width={width} height={width / 5}></canvas> */}
         </div>
         <div className="flex w-2/3 flex-col gap-4">
           {instru?.parameters.map((param) => (

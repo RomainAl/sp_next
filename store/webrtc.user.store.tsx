@@ -4,8 +4,8 @@ import Peer from "peerjs";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { useAudioUserStore } from "./audio.user.store";
-import { admin2userDataType, user2adminDataType } from "./mess.type.store";
 import { useMessUserStore } from "./mess.user.store";
+import { admin2userDataType, user2adminDataType } from "./shared.store";
 
 type webrtcUserStoreType = {
   username: string;
@@ -173,13 +173,16 @@ export const peerSound2peerMedia = async () => {
     if (peerMedia && peerMedia.open) {
       const audioSender = peerMedia.peerConnection.getSenders().find((s) => s.track?.kind === "audio");
       if (audioSender) audioSender.replaceTrack(peerSound.stream.getTracks()[0]);
+      const videoSender = peerMedia.peerConnection.getSenders().find((s) => s.track?.kind === "video");
+      if (videoSender) peerMedia.peerConnection.removeTrack(videoSender);
     } else {
       console.log("TODO : PEERJS CALL DONT LIKE peerSound !?");
-      await peerMediaCall();
-      peerSound2peerMedia();
-      // const peer = useWebrtcUserStore.getState().peer;
-      // const peerMedia = peer?.call(adminId, peerSound); // TODO GLOUPS PEERJS !??!
-      // useWebrtcUserStore.setState({ peerMedia });
+      // await peerMediaCall();
+      // peerSound2peerMedia();
+      const peer = useWebrtcUserStore.getState().peer;
+      // const toto = peerSound as unknown as MediaStream;
+      const peerMedia = peer?.call(adminId, peerSound.stream); // TODO GLOUPS PEERJS !??!
+      useWebrtcUserStore.setState({ peerMedia });
     }
   }
 };

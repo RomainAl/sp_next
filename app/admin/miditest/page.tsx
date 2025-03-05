@@ -1,5 +1,5 @@
 "use client";
-import SoundwaveCanvas from "@/components/soundwaveCanvas";
+import { SoundwaveCanvas } from "@/components/soundwaveCanvas";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useAudioUserStore } from "@/store/audio.user.store";

@@ -15,7 +15,7 @@ export default function Home() {
   const { height = 0 } = useWindowSize();
   const ref = useRef<HTMLDivElement>(null);
   const [api, setApi] = useState<CarouselApi>();
-
+  const audioContext = useAudioUserStore((store) => store.audioContext);
   useEffect(() => {
     if (!api) {
       return;
@@ -31,6 +31,13 @@ export default function Home() {
   useEffect(() => {
     if (ref.current) ref.current.style.height = `${height}px`;
   }, [height]);
+
+  useEffect(() => {
+    audioContext?.resume();
+    return () => {
+      audioContext?.suspend();
+    };
+  }, [audioContext]);
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">
@@ -59,7 +66,7 @@ const Insta = ({ index }: { index: number }) => {
   const [com, setCom] = useState<boolean>(false);
 
   return (
-    <CarouselItem className="border-blue-700 pt-10 md:basis-1/2">
+    <CarouselItem className=" border-blue-700 pt-10 md:basis-1/2 ">
       <div>
         <Card>
           <CardHeader className="mx-6 p-6">
@@ -105,18 +112,23 @@ const InstaVideo = ({ index }: { index: number }) => {
       if (currentVid === index) {
         ref.current.play();
         if (audioContext && peerSound) {
-          soundRef.current = audioContext.createMediaElementSource(ref.current);
+          if (!soundRef.current) soundRef.current = audioContext.createMediaElementSource(ref.current);
           soundRef.current.connect(peerSound);
           soundRef.current.connect(audioContext.destination);
           peerSound2peerMedia();
         }
       } else {
         ref.current.pause();
+        soundRef.current?.disconnect();
       }
       if (currentVid === index - 1) {
         ref.current.preload = "auto";
       }
     }
+
+    return () => {
+      soundRef.current?.disconnect();
+    };
   }, [currentVid, index, audioContext, peerSound]);
 
   return (

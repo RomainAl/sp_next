@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { admin2userDataType } from "./mess.type.store";
+import { admin2userDataType } from "./shared.store";
 
 const initAdmin2UserData: admin2userDataType = {
   goto: undefined,

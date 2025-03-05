@@ -1,5 +1,6 @@
 "use client";
 
+import { AudioMeter } from "@/components/audioMeter";
 import { useWebrtcAdminStore } from "@/store/webrtc.admin.store";
 import { useEffect, useRef } from "react";
 
@@ -13,18 +14,19 @@ export default function Home() {
   const handleData = () => {
     userS.forEach((user) => {
       if (user.peerData?.open) user.peerData?.send({ goto: "instru?n=0" });
-      // if (user.peerData?.open) user.peerData?.send({ getStream: { call: true, goto: "/facestime" } });
+      if (user.peerData?.open) user.peerData?.send({ getStream: { call: true, goto: "/facestime" } });
     });
   };
 
   useEffect(() => {
-    userS.forEach((user, i) =>
-      user.peerMedia?.on("stream", (stream) => {
-        if (callingVideoRefs.current && callingVideoRefs.current[i]) {
-          callingVideoRefs.current[i].srcObject = stream;
-        }
-      })
-    );
+    userS.forEach((user, i) => {
+      if (callingVideoRefs.current && callingVideoRefs.current[i]) {
+        callingVideoRefs.current[i].srcObject = user.stream;
+        user.stream?.getTracks().forEach((t) => {
+          console.log(t.kind);
+        });
+      }
+    });
   }, [userS]);
 
   return (
@@ -43,6 +45,9 @@ export default function Home() {
               playsInline
               autoPlay
             />
+            <div className="aspect-square w-full">
+              <AudioMeter stream={user.stream} />
+            </div>
           </div>
         ))}
       </div>

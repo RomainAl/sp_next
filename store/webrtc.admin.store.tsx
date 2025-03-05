@@ -3,19 +3,34 @@ import Peer from "peerjs";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { useMessAdminStore } from "./mess.admin.store";
-import { user2adminDataType } from "./mess.type.store";
+import { user2adminDataType } from "./shared.store";
 
-type userType = { id: string; name: string; peerData: DataConnection | null; peerMedia: MediaConnection | null };
+type userType = {
+  id: string;
+  name: string;
+  peerData: DataConnection | null;
+  peerMedia: MediaConnection | null;
+  stream: MediaStream | null;
+};
+
+export type webrtcBiterateType = {
+  id: string;
+  bitrate: number;
+  bit: number;
+  time: number;
+};
 
 type webrtcAdminStoreType = {
   peer: Peer | null;
   userS: userType[];
+  bitrates: webrtcBiterateType[];
 };
 
 export const useWebrtcAdminStore = create(
   devtools<webrtcAdminStoreType>(() => ({
     peer: null,
     userS: [],
+    bitrates: [],
   }))
 );
 
@@ -50,23 +65,35 @@ export const createPeer = async () => {
             console.log("TODO : PEER MOCHE !");
             peerData.send({ goto: useMessAdminStore.getState().goto });
             const user_ = useWebrtcAdminStore.getState().userS.find((u) => u.id === peerData.peer);
-            const user: userType = { id: peerData.peer, name: userData.name, peerData: peerData, peerMedia: user_?.peerMedia ?? null };
+            const user: userType = {
+              id: peerData.peer,
+              name: userData.name,
+              peerData: peerData,
+              peerMedia: user_?.peerMedia ?? null,
+              stream: user_?.stream ?? null,
+            };
+            const B: webrtcBiterateType = { id: peerData.peer, bitrate: 0, bit: 0, time: Date.now() };
             useWebrtcAdminStore.setState((state) => ({
               userS: [...state.userS.filter((p) => p.id !== peerData.peer), user],
+              bitrates: [...state.bitrates.filter((p) => p.id !== peerData.peer), B],
             }));
           }
         });
+
         peerData.on("close", () => {
           console.log(peerData.peer + " - peerData is closed");
           useWebrtcAdminStore.setState((state) => ({
             userS: state.userS.filter((p) => p.id !== peerData.peer),
+            bitrate: state.bitrates.filter((p) => p.id !== peerData.peer),
           }));
         });
+
         peerData.on("error", (e) => {
           console.log(peerData.peer + " - peerData is closed (error) : ");
           console.log(e.message);
           useWebrtcAdminStore.setState((state) => ({
             userS: state.userS.filter((p) => p.id !== peerData.peer),
+            bitrate: state.bitrates.filter((p) => p.id !== peerData.peer),
           }));
         });
       });
@@ -75,28 +102,59 @@ export const createPeer = async () => {
     // PEER MEDIA:
     peer.on("call", (peerMedia) => {
       peerMedia.answer();
-      peerMedia.on("stream", () => {
+      peerMedia.on("stream", (stream) => {
         console.log(peerMedia.peer + " - is streaming");
         console.log("TODO : PEER MOCHE !");
         const user_ = useWebrtcAdminStore.getState().userS.find((u) => u.id === peerMedia.peer);
-        const user: userType = { id: peerMedia.peer, name: user_?.name ?? "", peerData: user_?.peerData ?? null, peerMedia: peerMedia };
+        const user: userType = {
+          id: peerMedia.peer,
+          name: user_?.name ?? "",
+          peerData: user_?.peerData ?? null,
+          peerMedia: peerMedia,
+          stream: stream,
+        };
         useWebrtcAdminStore.setState((state) => ({ userS: [...state.userS.filter((p) => p.id !== peerMedia.peer), user] }));
       });
+
       peerMedia.on("close", () => {
         console.log(peerMedia.peer + " - peerMedia is closed");
-        useWebrtcAdminStore.setState((state) => ({
-          userS: [...state.userS.filter((p) => p.id !== peerMedia.peer)],
-        }));
+        // useWebrtcAdminStore.setState((state) => ({
+        //   userS: [...state.userS.filter((p) => p.id !== peerMedia.peer)],
+        // }));
+        const user_ = useWebrtcAdminStore.getState().userS.find((u) => u.id === peerMedia.peer);
+        const user: userType = {
+          id: peerMedia.peer,
+          name: user_?.name ?? "",
+          peerData: user_?.peerData ?? null,
+          peerMedia: null,
+          stream: null,
+        };
+        useWebrtcAdminStore.setState((state) => ({ userS: [...state.userS.filter((p) => p.id !== peerMedia.peer), user] }));
       });
+
       peerMedia.on("error", (e) => {
         console.log(peerMedia.peer + " - peerMedia is closed (error) :");
         console.log(e.message);
-        useWebrtcAdminStore.setState((state) => ({
-          userS: [...state.userS.filter((p) => p.id !== peerMedia.peer)],
-        }));
+        // useWebrtcAdminStore.setState((state) => ({
+        //   userS: [...state.userS.filter((p) => p.id !== peerMedia.peer)],
+        // }));
+        const user_ = useWebrtcAdminStore.getState().userS.find((u) => u.id === peerMedia.peer);
+        const user: userType = {
+          id: peerMedia.peer,
+          name: user_?.name ?? "",
+          peerData: user_?.peerData ?? null,
+          peerMedia: null,
+          stream: null,
+        };
+        useWebrtcAdminStore.setState((state) => ({ userS: [...state.userS.filter((p) => p.id !== peerMedia.peer), user] }));
       });
     });
   });
 
   useWebrtcAdminStore.setState({ peer });
+};
+
+export const setBitrates = ({ id, bitrate, bit, time }: webrtcBiterateType) => {
+  const bitrateUpdate: webrtcBiterateType = { id, bitrate, bit, time };
+  useWebrtcAdminStore.setState((state) => ({ bitrates: [...state.bitrates.filter((p) => p.id !== id), bitrateUpdate] }));
 };

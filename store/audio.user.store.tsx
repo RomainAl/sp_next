@@ -1,4 +1,5 @@
 import { createDevice, Device } from "@rnbo/js";
+import { createRef, RefObject } from "react";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -7,6 +8,7 @@ type audioStoreType = {
   audioAnalyser: AnalyserNode | null;
   instrus: Device[];
   peerSound: MediaStreamAudioDestinationNode | null;
+  audioContextRef: RefObject<AudioContext | null>;
   // params: Array<Array<ICreateDeviceParameters>>;
   setAudioContext: (context: AudioContext) => void;
   setInstru: (instru: Device) => void;
@@ -16,8 +18,9 @@ export const useAudioUserStore = create(
   devtools<audioStoreType>((set) => ({
     audioContext: null,
     audioAnalyser: null,
-    instrus: new Array(3),
+    instrus: new Array(1),
     peerSound: null,
+    audioContextRef: createRef<AudioContext>(),
     // params: new Array(2),
     setAudioContext: (audioContext: AudioContext) => {
       set((state) => {
@@ -59,6 +62,8 @@ export const useAudioUserStore = create(
 
 export const setUserAudio = async () => {
   const ctx = new AudioContext();
+  const ctxRef = createRef<AudioContext | null>();
+  ctxRef.current = ctx;
   ctx.resume();
   const instrus = useAudioUserStore.getState().instrus;
   // const params = useAudioUserStore.getState().params;
@@ -79,6 +84,7 @@ export const setUserAudio = async () => {
   }
   useAudioUserStore.setState({
     audioContext: ctx,
+    audioContextRef: ctxRef,
     audioAnalyser: ctx.createAnalyser(),
     instrus: instrus,
     peerSound: ctx.createMediaStreamDestination(),

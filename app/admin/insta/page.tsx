@@ -1,5 +1,7 @@
 "use client";
 
+import { AudioMeter } from "@/components/audioMeter";
+import { RtcStatsChart } from "@/components/rtcStatsChart";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 import { UserAvatar2 } from "@/components/userAvatar";
@@ -8,9 +10,6 @@ import { useWebrtcAdminStore } from "@/store/webrtc.admin.store";
 
 export default function Home() {
   const userS = useWebrtcAdminStore((store) => store.userS);
-  // const { usersid } = useWebrtcAdminStore((s) => ({ usersid: s.userS.map((u) => u.id) })); // TODO CHECK WHY AND HOW
-
-  console.log("Render outside useEffect !");
   return (
     <div className="flex h-screen w-screen text-center text-sm">
       <ResizablePanelGroup direction="horizontal" className="size-full">
@@ -23,6 +22,28 @@ export default function Home() {
                 {userS.map((user) => (
                   <div
                     key={user.id}
+                    className={cn("relative w-1/12 aspect-square p-0", {
+                      "w-full": userS.length === 1,
+                      "w-1/3": userS.length > 1 && userS.length < 10,
+                      "w-1/6": userS.length > 9 && userS.length < 37,
+                    })}
+                  >
+                    <UserAvatar2 name={user.name} size={362} />
+                    <div className="absolute top-0 flex size-full items-center justify-center">
+                      <p className="rounded-lg border border-primary bg-accent px-5 py-2 text-primary"> {user.name}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize={50} className="flex flex-col items-center justify-center gap-2">
+              <p>Audio from people : </p>
+              <Separator className="w-1/2 bg-accent" />
+              <div className="flex size-full flex-row flex-wrap items-start justify-start gap-0">
+                {userS.map((user) => (
+                  <div
+                    key={user.id}
                     className={cn("flex w-1/12 flex-col items-center justify-center gap-1 p-1", {
                       "w-full": userS.length === 1,
                       "w-1/3": userS.length > 1 && userS.length < 10,
@@ -30,17 +51,10 @@ export default function Home() {
                     })}
                   >
                     <div className="aspect-square w-full">
-                      <UserAvatar2 name={user.name} size={362} />
+                      <AudioMeter stream={user.stream} />
                     </div>
-                    <p className="text-primary"> {user.name}</p>
                   </div>
                 ))}
-              </div>
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize={50}>
-              <div className="flex h-full items-center justify-center p-6">
-                <span className="font-semibold">Three</span>
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>
@@ -48,15 +62,22 @@ export default function Home() {
         <ResizableHandle />
         <ResizablePanel defaultSize={50}>
           <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={50}>
-              <div className="flex h-full items-center justify-center p-6">
-                <span className="font-semibold">Two</span>
-              </div>
+            <ResizablePanel defaultSize={50} className="flex flex-col items-center justify-center gap-2">
+              <RtcStatsChart />
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={50}>
               <div className="flex h-full items-center justify-center p-6">
-                <span className="font-semibold">Three</span>
+                {userS.map((user) => (
+                  <div
+                    key={user.id}
+                    className={cn("flex w-1/12 flex-col items-center justify-center gap-1 p-1", {
+                      "w-full": userS.length === 1,
+                      "w-1/3": userS.length > 1 && userS.length < 10,
+                      "w-1/6": userS.length > 9 && userS.length < 37,
+                    })}
+                  ></div>
+                ))}
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>

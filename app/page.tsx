@@ -3,13 +3,14 @@
 import { AlertDestructive } from "@/components/alertDestructive";
 import { LogoSP } from "@/components/logoSP";
 import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 // import { UserAvatar } from "@/components/userAvatar";
 import { setUserAudio, useAudioUserStore } from "@/store/audio.user.store";
 import { setInitMessUserStore } from "@/store/mess.user.store";
-import { createPeer, peerDataConn, peerMediaCall, setUserName, useWebrtcUserStore } from "@/store/webrtc.user.store";
+import { createPeer, peerDataConn, setUserName, useWebrtcUserStore } from "@/store/webrtc.user.store";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef, useTransition } from "react";
@@ -31,6 +32,7 @@ export default function Home() {
   // const value = 0;
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-5">
+      {/* <TestChart /> */}
       <div className="flex w-1/2 max-w-sm flex-col items-center justify-center">
         <LogoSP />
         <p className="text-2xl italic text-primary">smart.phonics</p>
@@ -75,7 +77,7 @@ const MyFormComponent = () => {
         progress: 0.99,
         className: "rounded-lg bg-accent text-sm",
       });
-      peerMediaCall();
+      // await peerMediaCall();
       toast.dismiss(toast_loading.current);
       router.push("/user");
       return "success";
