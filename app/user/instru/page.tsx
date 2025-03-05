@@ -2,18 +2,18 @@
 
 import SoundwaveCanvas from "@/components/soundwaveCanvas";
 import { Slider } from "@/components/ui/slider";
-import { useAudioStore } from "@/store/audio.user.store";
+import { useAudioUserStore } from "@/store/audio.user.store";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useWindowSize } from "usehooks-ts";
 
 export default function Home() {
   const searchParams = useSearchParams();
-  const audioContext = useAudioStore((store) => store.audioContext);
+  const audioContext = useAudioUserStore((store) => store.audioContext);
   const intruNb: number = searchParams.has("n") ? Number(searchParams.get("n")) : 0;
-  const instru = useAudioStore((store) => store.instrus[intruNb]);
+  const instru = useAudioUserStore((store) => store.instrus[intruNb]);
 
-  const analyser = useAudioStore((store) => store.audioAnalyser);
+  const analyser = useAudioUserStore((store) => store.audioAnalyser);
 
   const { width = 0 } = useWindowSize();
   const sliderValChange = (sliderName: string, value: number) => {

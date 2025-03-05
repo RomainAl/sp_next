@@ -12,7 +12,7 @@ type audioStoreType = {
   setInstru: (instru: Device) => void;
 };
 
-export const useAudioStore = create(
+export const useAudioUserStore = create(
   devtools<audioStoreType>((set) => ({
     audioContext: null,
     audioAnalyser: null,
@@ -60,8 +60,8 @@ export const useAudioStore = create(
 export const setUserAudio = async () => {
   const ctx = new AudioContext();
   ctx.resume();
-  const instrus = useAudioStore.getState().instrus;
-  // const params = useAudioStore.getState().params;
+  const instrus = useAudioUserStore.getState().instrus;
+  // const params = useAudioUserStore.getState().params;
   for (let i = 0; i < instrus.length; i++) {
     try {
       const path = "instrus/instru";
@@ -77,7 +77,7 @@ export const setUserAudio = async () => {
       console.error(e);
     }
   }
-  useAudioStore.setState({
+  useAudioUserStore.setState({
     audioContext: ctx,
     audioAnalyser: ctx.createAnalyser(),
     instrus: instrus,

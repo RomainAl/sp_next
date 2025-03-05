@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 // import { UserAvatar } from "@/components/userAvatar";
-import { setUserAudio, useAudioStore } from "@/store/audio.user.store";
+import { setUserAudio, useAudioUserStore } from "@/store/audio.user.store";
 import { setInitMessUserStore } from "@/store/mess.user.store";
-import { createPeer, peerDataConn, setUserName, useWebrtcUserStore } from "@/store/webrtc.user.store";
+import { createPeer, peerDataConn, peerMediaCall, setUserName, useWebrtcUserStore } from "@/store/webrtc.user.store";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef, useTransition } from "react";
@@ -53,7 +53,7 @@ export default function Home() {
 }
 
 const MyFormComponent = () => {
-  const audioContext = useAudioStore((store) => store.audioContext);
+  const audioContext = useAudioUserStore((store) => store.audioContext);
   const toast_loading = useRef<Id>(null);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -75,6 +75,7 @@ const MyFormComponent = () => {
         progress: 0.99,
         className: "rounded-lg bg-accent text-sm",
       });
+      peerMediaCall();
       toast.dismiss(toast_loading.current);
       router.push("/user");
       return "success";

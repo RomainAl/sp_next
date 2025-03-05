@@ -17,13 +17,9 @@ export default function Home() {
     });
   };
 
-  console.log("Render outside useEffect !");
   useEffect(() => {
-    console.log("Render useEffect !");
     userS.forEach((user, i) =>
       user.peerMedia?.on("stream", (stream) => {
-        console.log("STREEAMM ENTER !");
-        console.log(stream);
         if (callingVideoRefs.current && callingVideoRefs.current[i]) {
           callingVideoRefs.current[i].srcObject = stream;
         }

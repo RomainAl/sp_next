@@ -2,15 +2,15 @@
 import SoundwaveCanvas from "@/components/soundwaveCanvas";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { useAudioStore } from "@/store/audio.user.store";
+import { useAudioUserStore } from "@/store/audio.user.store";
 import { MIDIVal, MIDIValInput } from "@midival/core";
 import { useEffect, useRef, useState } from "react";
 import { useWindowSize } from "usehooks-ts";
 
 export default function Home() {
-  const audioContext = useAudioStore((store) => store.audioContext);
-  const instru = useAudioStore((store) => store.instrus[0]);
-  const analyser = useAudioStore((store) => store.audioAnalyser);
+  const audioContext = useAudioUserStore((store) => store.audioContext);
+  const instru = useAudioUserStore((store) => store.instrus[0]);
+  const analyser = useAudioUserStore((store) => store.audioAnalyser);
 
   const { width = 0 } = useWindowSize();
   const sliderValChange = (sliderName: string, value: number) => {

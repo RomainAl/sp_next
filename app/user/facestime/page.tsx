@@ -34,8 +34,6 @@ export default function Home() {
 
   useEffect(() => {
     if (myVideoRef.current) {
-      console.log("peerMedia : ");
-      console.log(peerData);
       myVideoRef.current.srcObject = stream;
     }
     return () => {

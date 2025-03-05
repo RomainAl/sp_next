@@ -1,26 +1,21 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { admin2userDataType } from "./mess.type.store";
 
-export type messDataType = {
-  currentPage: string;
-  message?: string;
-};
-
-const initMessUserStore = {
-  currentPage: "insta",
-  message: undefined,
+const initAdmin2UserData: admin2userDataType = {
+  goto: "facestime", // FOR USER CONNECTION GOTO
 };
 
 export const useMessAdminStore = create(
-  devtools<messDataType>(() => ({
-    ...initMessUserStore,
+  devtools<admin2userDataType>(() => ({
+    ...initAdmin2UserData,
   }))
 );
 
-export const setCurrentPage = (currentPage: string) => {
-  useMessAdminStore.setState({ currentPage });
+export const setCurrentPage = (goto: string) => {
+  useMessAdminStore.setState({ goto });
 };
 
 export const setInitMessUserStore = () => {
-  useMessAdminStore.setState(initMessUserStore);
+  useMessAdminStore.setState(initAdmin2UserData);
 };

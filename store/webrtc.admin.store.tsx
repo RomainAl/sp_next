@@ -3,19 +3,13 @@ import Peer from "peerjs";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { useMessAdminStore } from "./mess.admin.store";
+import { user2adminDataType } from "./mess.type.store";
 
 type userType = { id: string; name: string; peerData: DataConnection | null; peerMedia: MediaConnection | null };
 
 type webrtcAdminStoreType = {
   peer: Peer | null;
   userS: userType[];
-};
-
-type userDataType = {
-  href?: string;
-  message?: string;
-  call?: { call: boolean; href: string };
-  name?: string;
 };
 
 export const useWebrtcAdminStore = create(
@@ -51,10 +45,10 @@ export const createPeer = async () => {
         peerData.on("data", (data) => {
           console.log(peerData.peer + " - sent mess :");
           console.log(data);
-          const userData = data as userDataType;
+          const userData = data as user2adminDataType;
           if (userData.name) {
             console.log("TODO : PEER MOCHE !");
-            peerData.send({ goto: useMessAdminStore.getState().currentPage });
+            peerData.send({ goto: useMessAdminStore.getState().goto });
             const user_ = useWebrtcAdminStore.getState().userS.find((u) => u.id === peerData.peer);
             const user: userType = { id: peerData.peer, name: userData.name, peerData: peerData, peerMedia: user_?.peerMedia ?? null };
             useWebrtcAdminStore.setState((state) => ({

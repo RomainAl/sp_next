@@ -12,14 +12,14 @@ import { useActionState } from "react";
 
 export default function Home() {
   const peer = useWebrtcAdminStore((store) => store.peer);
-  const currentPage = useMessAdminStore((store) => store.currentPage);
+  const goto = useMessAdminStore((store) => store.goto);
   const router = useRouter();
   if (!peer) createPeer();
   const [message, submitaction, pending] = useActionState(async (_: unknown, formData: FormData) => {
     try {
       const password: string = formData.get("password") as string;
       if (password !== "") return "error";
-      router.push(`/admin/${currentPage}`);
+      router.push(`/admin/${goto}`);
       return "success";
     } catch (e) {
       if (e instanceof Error) {

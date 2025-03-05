@@ -1,20 +1,15 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { admin2userDataType } from "./mess.type.store";
 
-export type messDataType = {
-  goto?: string;
-  message?: string;
-  getStream?: { call: boolean; goto: string } | undefined;
-};
-
-const initMessUserStore = {
+const initAdmin2UserData: admin2userDataType = {
   goto: undefined,
   getStream: undefined,
 };
 
 export const useMessUserStore = create(
-  devtools<messDataType>(() => ({
-    ...initMessUserStore,
+  devtools<admin2userDataType>(() => ({
+    ...initAdmin2UserData,
   }))
 );
 
@@ -22,5 +17,5 @@ export const setGoto = (goto: string) => {
   useMessUserStore.setState({ goto });
 };
 export const setInitMessUserStore = () => {
-  useMessUserStore.setState(initMessUserStore);
+  useMessUserStore.setState(initAdmin2UserData);
 };

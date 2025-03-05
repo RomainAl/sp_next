@@ -1,7 +1,12 @@
 "use client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
+import { Spinner } from "@/components/ui/spinner";
 import { InstaAvatar } from "@/components/userAvatar";
+import { cn } from "@/lib/utils";
+import { useAudioUserStore } from "@/store/audio.user.store";
+import { setInstaCurrentVid, useInstaUserStore } from "@/store/insta.user.store";
+import { peerSound2peerMedia, sendMess } from "@/store/webrtc.user.store";
 import { Heart, MessageCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useWindowSize } from "usehooks-ts";
@@ -10,20 +15,18 @@ export default function Home() {
   const { height = 0 } = useWindowSize();
   const ref = useRef<HTMLDivElement>(null);
   const [api, setApi] = useState<CarouselApi>();
-  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     if (!api) {
       return;
     }
-    console.log("GoUseEffect");
-    console.log(current);
-    setCurrent(api.selectedScrollSnap() + 1);
+    console.log("TODO : CHECK IF DON'T NEED TO KILL CAROUSSEL API");
 
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
+      sendMess({ currentInstaVid: api.selectedScrollSnap() });
+      setInstaCurrentVid(api.selectedScrollSnap());
     });
-  }, [api, current]);
+  }, [api]);
 
   useEffect(() => {
     if (ref.current) ref.current.style.height = `${height}px`;
@@ -71,7 +74,7 @@ const Insta = ({ index }: { index: number }) => {
           </CardContent>
           <CardFooter className="gap-5">
             <Heart size={30} onClick={() => setLike(!like)} fill={like ? "red" : "none"} strokeWidth={like ? 0 : 1} />
-            <MessageCircle onClick={() => setCom(!com)} fill={com ? "red" : "none"} strokeWidth={1} size={30} />
+            <MessageCircle onClick={() => setCom(!com)} strokeWidth={1} size={30} />
           </CardFooter>
           <p className="px-6 pb-6 text-sm italic">#cut #animal #super #glad #lifeisbeautiful</p>
         </Card>
@@ -82,15 +85,44 @@ const Insta = ({ index }: { index: number }) => {
 
 const InstaVideo = ({ index }: { index: number }) => {
   const { width = 0 } = useWindowSize();
-
+  const currentVid = useInstaUserStore((store) => store.currentVid);
   const ref = useRef<HTMLVideoElement>(null);
+  const [pending, setPending] = useState<boolean>(true);
+  const audioContext = useAudioUserStore((store) => store.audioContext);
+  const peerSound = useAudioUserStore((store) => store.peerSound);
+  const soundRef = useRef<MediaElementAudioSourceNode>(null);
   useEffect(() => {
     if (ref.current) ref.current.width = width;
   }, [width]);
 
+  if (ref.current)
+    ref.current.onloadeddata = () => {
+      setPending(false);
+    };
+
+  useEffect(() => {
+    if (ref.current) {
+      if (currentVid === index) {
+        ref.current.play();
+        if (audioContext && peerSound) {
+          soundRef.current = audioContext.createMediaElementSource(ref.current);
+          soundRef.current.connect(peerSound);
+          soundRef.current.connect(audioContext.destination);
+          peerSound2peerMedia();
+        }
+      } else {
+        ref.current.pause();
+      }
+      if (currentVid === index - 1) {
+        ref.current.preload = "auto";
+      }
+    }
+  }, [currentVid, index, audioContext, peerSound]);
+
   return (
-    <div>
-      <video ref={ref} autoPlay muted loop preload="none">
+    <div className="flex size-full items-center justify-center">
+      {pending && <Spinner size="xlarge"></Spinner>}
+      <video className={cn("block", { hidden: pending })} ref={ref} loop preload="none">
         <source src={`/insta/video${index}.mp4`} type="video/mp4" />
         Your browser does not support the video tag.
       </video>

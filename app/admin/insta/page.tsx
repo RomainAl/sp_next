@@ -8,7 +8,8 @@ import { useWebrtcAdminStore } from "@/store/webrtc.admin.store";
 
 export default function Home() {
   const userS = useWebrtcAdminStore((store) => store.userS);
-  console.log(userS);
+  // const { usersid } = useWebrtcAdminStore((s) => ({ usersid: s.userS.map((u) => u.id) })); // TODO CHECK WHY AND HOW
+
   console.log("Render outside useEffect !");
   return (
     <div className="flex h-screen w-screen text-center text-sm">

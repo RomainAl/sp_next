@@ -3,7 +3,9 @@ import type { DataConnection, MediaConnection } from "peerjs";
 import Peer from "peerjs";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { messDataType, useMessUserStore } from "./mess.user.store";
+import { useAudioUserStore } from "./audio.user.store";
+import { admin2userDataType, user2adminDataType } from "./mess.type.store";
+import { useMessUserStore } from "./mess.user.store";
 
 type webrtcUserStoreType = {
   username: string;
@@ -109,7 +111,7 @@ export const peerDataConn = async () => {
         peerData.on("data", (data) => {
           console.log(peerData.peer + " - sent mess :");
           console.log(data);
-          const mess = data as messDataType;
+          const mess = data as admin2userDataType;
           if (mess.goto) {
             useMessUserStore.setState({ goto: mess.goto });
           }
@@ -164,9 +166,32 @@ export const peerMediaCall = async () => {
   }
 };
 
+export const peerSound2peerMedia = async () => {
+  const peerMedia = useWebrtcUserStore.getState().peerMedia;
+  const peerSound = useAudioUserStore.getState().peerSound;
+  if (peerSound) {
+    if (peerMedia && peerMedia.open) {
+      const audioSender = peerMedia.peerConnection.getSenders().find((s) => s.track?.kind === "audio");
+      if (audioSender) audioSender.replaceTrack(peerSound.stream.getTracks()[0]);
+    } else {
+      console.log("TODO : PEERJS CALL DONT LIKE peerSound !?");
+      await peerMediaCall();
+      peerSound2peerMedia();
+      // const peer = useWebrtcUserStore.getState().peer;
+      // const peerMedia = peer?.call(adminId, peerSound); // TODO GLOUPS PEERJS !??!
+      // useWebrtcUserStore.setState({ peerMedia });
+    }
+  }
+};
+
 export const setStream = async () => {
   const constraints = useWebrtcUserStore.getState().mediaconstraints;
   navigator.mediaDevices.getUserMedia(constraints[0]).then((stream) => {
     useWebrtcUserStore.setState({ stream });
   });
+};
+
+export const sendMess = (mess: user2adminDataType) => {
+  const peerData = useWebrtcUserStore.getState().peerData;
+  if (peerData?.open) peerData?.send(mess);
 };

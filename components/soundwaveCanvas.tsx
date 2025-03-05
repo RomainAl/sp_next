@@ -1,4 +1,4 @@
-import { useAudioStore } from "@/store/audio.user.store";
+import { useAudioUserStore } from "@/store/audio.user.store";
 import { ComponentPropsWithoutRef, useEffect, useRef } from "react";
 
 type SoundwaveCanvasProps = ComponentPropsWithoutRef<"canvas">;
@@ -6,7 +6,7 @@ type SoundwaveCanvasProps = ComponentPropsWithoutRef<"canvas">;
 export function SoundwaveCanvas(props: SoundwaveCanvasProps) {
   console.log("TODO : RENDER CANVAS - SoundwaveCanvas");
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const analyser = useAudioStore((store) => store.audioAnalyser);
+  const analyser = useAudioUserStore((store) => store.audioAnalyser);
 
   const visualizer = (canvas: HTMLCanvasElement, analyser: AnalyserNode) => {
     const ctx = canvas.getContext("2d");
