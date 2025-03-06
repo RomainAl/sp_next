@@ -1,6 +1,7 @@
 "use client";
 
 import { AudioMeter } from "@/components/audioMeter";
+import { InstaCurrVidChart } from "@/components/instaCurrVidChart";
 import { RtcStatsChart } from "@/components/rtcStatsChart";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
@@ -16,25 +17,7 @@ export default function Home() {
         <ResizablePanel defaultSize={50}>
           <ResizablePanelGroup direction="vertical">
             <ResizablePanel defaultSize={50} className="flex flex-col items-center justify-center gap-2">
-              <p>Connected people : </p>
-              <Separator className="w-1/2 bg-accent" />
-              <div className="flex size-full flex-row flex-wrap items-start justify-start gap-0">
-                {userS.map((user) => (
-                  <div
-                    key={user.id}
-                    className={cn("relative w-1/12 aspect-square p-0", {
-                      "w-full": userS.length === 1,
-                      "w-1/3": userS.length > 1 && userS.length < 10,
-                      "w-1/6": userS.length > 9 && userS.length < 37,
-                    })}
-                  >
-                    <UserAvatar2 name={user.name} size={362} />
-                    <div className="absolute top-0 flex size-full items-center justify-center">
-                      <p className="rounded-lg border border-primary bg-accent px-5 py-2 text-primary"> {user.name}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <RtcStatsChart />
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={50} className="flex flex-col items-center justify-center gap-2">
@@ -63,22 +46,29 @@ export default function Home() {
         <ResizablePanel defaultSize={50}>
           <ResizablePanelGroup direction="vertical">
             <ResizablePanel defaultSize={50} className="flex flex-col items-center justify-center gap-2">
-              <RtcStatsChart />
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize={50}>
-              <div className="flex h-full items-center justify-center p-6">
+              <p>Connected people : </p>
+              <Separator className="w-1/2 bg-accent" />
+              <div className="flex size-full flex-row flex-wrap items-start justify-start gap-0">
                 {userS.map((user) => (
                   <div
                     key={user.id}
-                    className={cn("flex w-1/12 flex-col items-center justify-center gap-1 p-1", {
+                    className={cn("relative w-1/12 aspect-square p-0", {
                       "w-full": userS.length === 1,
                       "w-1/3": userS.length > 1 && userS.length < 10,
                       "w-1/6": userS.length > 9 && userS.length < 37,
                     })}
-                  ></div>
+                  >
+                    <UserAvatar2 name={user.id} size={362} />
+                    <div className="absolute top-0 flex size-full items-center justify-center">
+                      <p className="rounded-lg border border-primary bg-accent px-5 py-2 text-primary"> {user.name}</p>
+                    </div>
+                  </div>
                 ))}
               </div>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize={50} className="flex flex-col items-center justify-center gap-2">
+              <InstaCurrVidChart />
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>

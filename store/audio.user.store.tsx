@@ -80,6 +80,7 @@ export const setUserAudio = async () => {
       // params[i] = instrus[i].parameters; // TODO pourquoi array/array/truc ?!
     } catch (e) {
       console.error(e);
+      console.error("Impossible de charger les effets !");
     }
   }
   useAudioUserStore.setState({

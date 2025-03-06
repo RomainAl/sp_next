@@ -2,6 +2,7 @@ import type { DataConnection, MediaConnection } from "peerjs";
 import Peer from "peerjs";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { setInstaCurrentVid } from "./insta.admin.store";
 import { useMessAdminStore } from "./mess.admin.store";
 import { user2adminDataType } from "./shared.store";
 
@@ -77,6 +78,9 @@ export const createPeer = async () => {
               userS: [...state.userS.filter((p) => p.id !== peerData.peer), user],
               bitrates: [...state.bitrates.filter((p) => p.id !== peerData.peer), B],
             }));
+          }
+          if (userData.currentInstaVid) {
+            setInstaCurrentVid(userData.currentInstaVid);
           }
         });
 

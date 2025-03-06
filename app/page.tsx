@@ -32,7 +32,7 @@ export default function Home() {
   // const value = 0;
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-5">
-      {/* <TestChart /> */}
+      {/* <TestCharts /> */}
       <div className="flex w-1/2 max-w-sm flex-col items-center justify-center">
         <LogoSP />
         <p className="text-2xl italic text-primary">smart.phonics</p>

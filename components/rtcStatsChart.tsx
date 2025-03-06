@@ -1,21 +1,17 @@
 "use client";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { setBitrates, useWebrtcAdminStore, webrtcBiterateType } from "@/store/webrtc.admin.store";
 
-import { Bar, BarChart, CartesianGrid, YAxis } from "recharts";
+import { Bar, BarChart, YAxis } from "recharts";
 
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { useEffect, useState } from "react";
-import { Separator } from "./ui/separator";
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "bitrates",
     color: "hsl(var(--chart-1))",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
@@ -54,15 +50,19 @@ export function RtcStatsChart() {
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-2">
-      <p>{`Débit total : ${BG} kbit/s`}</p>
-      <Separator className="w-1/2 bg-accent" />
-      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-        <BarChart data={bitrates}>
-          <CartesianGrid vertical={false} />
-          <YAxis tickLine={false} axisLine={false} domain={[0, 50]} />
-          <Bar dataKey="bitrate" fill="var(--color-desktop)" radius={4} />
-        </BarChart>
-      </ChartContainer>
+      <Card className="size-full">
+        <CardHeader className="items-center pb-4">
+          <CardTitle>{`Débit total : ${BG} kbit/s`}</CardTitle>
+        </CardHeader>
+        <CardContent className="pb-0">
+          <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+            <BarChart data={bitrates}>
+              <YAxis tickLine={true} axisLine={true} domain={[0, 50]} />
+              <Bar dataKey="bitrate" fill="var(--color-desktop)" radius={4} />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
     </div>
   );
 }

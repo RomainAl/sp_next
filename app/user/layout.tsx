@@ -10,6 +10,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useMessUserStore } from "@/store/mess.user.store";
+import { useWebrtcUserStore } from "@/store/webrtc.user.store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -17,13 +18,14 @@ import { Slide, ToastContainer } from "react-toastify";
 import { useShallow } from "zustand/react/shallow";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const peer = useWebrtcUserStore((store) => store.peer);
   const goto = useMessUserStore((store) => store.goto);
   const getStream = useMessUserStore(useShallow((store) => store.getStream));
   const router = useRouter();
-
   useEffect(() => {
+    if (!peer) router.push("/");
     if (goto) router.push("/user/" + goto);
-  }, [goto, router]);
+  }, [goto, router, peer]);
 
   return (
     <>

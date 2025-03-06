@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { useWindowSize } from "usehooks-ts";
 
 export default function Home() {
+  const vidNb = useInstaUserStore((store) => store.vidNb);
   const { height = 0 } = useWindowSize();
   const ref = useRef<HTMLDivElement>(null);
   const [api, setApi] = useState<CarouselApi>();
@@ -52,7 +53,7 @@ export default function Home() {
         className="size-full"
       >
         <CarouselContent ref={ref} className="-mt-1 h-[600px]">
-          {Array.from({ length: 5 }).map((_, index) => (
+          {Array.from({ length: vidNb }).map((_, index) => (
             <Insta key={index} index={index} />
           ))}
         </CarouselContent>
