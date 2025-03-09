@@ -3,7 +3,7 @@ import { devtools } from "zustand/middleware";
 import { admin2userDataType } from "./shared.store";
 
 const initAdmin2UserData: admin2userDataType = {
-  goto: "insta", // FOR USER CONNECTION GOTO
+  goto: "instru?n=0", // FOR USER CONNECTION GOTO
 };
 
 export const useMessAdminStore = create(

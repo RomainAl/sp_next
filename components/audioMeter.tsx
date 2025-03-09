@@ -1,17 +1,22 @@
 import { useAudioAdminStore } from "@/store/audio.admin.store";
 import { useEffect, useRef } from "react";
 
-export const AudioMeter = ({ stream }: { stream: MediaStream | null }) => {
+export const AudioMeter = ({ stream, index }: { stream: MediaStream | null; index: number }) => {
   const ref = useRef<HTMLDivElement>(null);
   const refAudio = useRef<HTMLAudioElement>(null);
   const audioContext = useAudioAdminStore((store) => store.audioContext);
+  const merger = useAudioAdminStore((store) => store.merger);
   const analyser = audioContext?.createAnalyser();
+  const splitter = audioContext?.createChannelSplitter(1);
+  const requestRef = useRef<number>(null);
+  const ch = index % (audioContext?.destination.maxChannelCount ?? 2);
 
   if (stream) {
     if (refAudio.current) refAudio.current.srcObject = stream;
     const source = audioContext?.createMediaStreamSource(stream);
-    if (analyser) source?.connect(analyser);
+    if (analyser && splitter && merger) source?.connect(splitter).connect(analyser).connect(merger, 0, ch);
   }
+
   const soundVisualizer = (div: HTMLDivElement, analyser: AnalyserNode) => {
     analyser.fftSize = 512;
     const times = new Uint8Array(analyser.frequencyBinCount);
@@ -23,10 +28,8 @@ export const AudioMeter = ({ stream }: { stream: MediaStream | null }) => {
         const value = 2 * (amplitude / 256 - 0.5);
         sum += value;
       }
-      // div.style.backgroundColor = "hsl(" + (1 - 2 * Math.sqrt(sum / params.fftSize)) * 500 + ", 100%, 50%)";
       div.style.backgroundColor = `rgb(${255 * sum}, ${255 * sum}, ${255 * sum})`;
-
-      requestAnimationFrame(draw);
+      requestRef.current = requestAnimationFrame(draw);
     };
     draw();
   };
@@ -36,6 +39,12 @@ export const AudioMeter = ({ stream }: { stream: MediaStream | null }) => {
       return;
     }
     if (ref.current) soundVisualizer(ref.current, analyser);
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+        console.log("cancelAnimationFrame");
+      }
+    };
   }, [analyser]);
 
   return (

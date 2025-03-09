@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 // import { UserAvatar } from "@/components/userAvatar";
 import { setUserAudio, useAudioUserStore } from "@/store/audio.user.store";
+import { setInstaVidMeta } from "@/store/insta.user.store";
 import { setInitMessUserStore } from "@/store/mess.user.store";
 import { createPeer, peerDataConn, setUserName, useWebrtcUserStore } from "@/store/webrtc.user.store";
 import { ArrowRight } from "lucide-react";
@@ -47,14 +48,14 @@ export default function Home() {
           <br /> Et go !
         </p>
       </div>
-      <MyFormComponent />
+      <MyFormComponent nopeer={!peer} />
       {pending && !peer && <AlertDestructive title={"OUPS !"} message={"Echec de la connection au serveur (recharge !)"} />}
       <ToastContainer draggable transition={Slide} position="top-center" theme="dark" className="mt-1 w-full gap-2 px-8" />
     </div>
   );
 }
 
-const MyFormComponent = () => {
+const MyFormComponent = ({ nopeer }: { nopeer: boolean }) => {
   const audioContext = useAudioUserStore((store) => store.audioContext);
   const toast_loading = useRef<Id>(null);
   const router = useRouter();
@@ -77,6 +78,7 @@ const MyFormComponent = () => {
         progress: 0.99,
         className: "rounded-lg bg-accent text-sm",
       });
+      setInstaVidMeta();
       // await peerMediaCall();
       toast.dismiss(toast_loading.current);
       router.push("/user");
@@ -99,8 +101,8 @@ const MyFormComponent = () => {
       <form action={submitaction} className="flex w-1/2 max-w-sm flex-col items-center justify-center gap-4">
         <div className="flex w-full flex-row items-center space-x-2">
           <Input className="text-xs" ref={inputRef} type="text" name="username" placeholder={"Nouveau pseudo"} />
-          <Button disabled={pending} type="submit">
-            {pending ? <Spinner className=" text-primary-foreground" /> : <ArrowRight strokeWidth={2.25} />}
+          <Button disabled={nopeer || pending} type="submit">
+            {nopeer || pending ? <Spinner className=" text-primary-foreground" /> : <ArrowRight strokeWidth={2.25} />}
           </Button>
         </div>
       </form>

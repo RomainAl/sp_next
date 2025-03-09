@@ -46,7 +46,7 @@ export default function Home() {
               autoPlay
             />
             <div className="aspect-square w-full">
-              <AudioMeter stream={user.stream} />
+              <AudioMeter stream={user.stream} index={i} />
             </div>
           </div>
         ))}

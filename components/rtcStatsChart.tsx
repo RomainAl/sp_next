@@ -57,7 +57,7 @@ export function RtcStatsChart() {
         <CardContent className="pb-0">
           <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
             <BarChart data={bitrates}>
-              <YAxis tickLine={true} axisLine={true} domain={[0, 50]} />
+              <YAxis tickLine={false} axisLine={false} domain={[0, 50]} />
               <Bar dataKey="bitrate" fill="var(--color-desktop)" radius={4} />
             </BarChart>
           </ChartContainer>

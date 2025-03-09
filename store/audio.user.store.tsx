@@ -69,7 +69,7 @@ export const setUserAudio = async () => {
   // const params = useAudioUserStore.getState().params;
   for (let i = 0; i < instrus.length; i++) {
     try {
-      const path = "instrus/instru";
+      const path = "/instru";
       const rawPatcher = await fetch(`${path}${i}/patch.export.json`);
       const patcher = await rawPatcher.json();
       const dependenciesResponse = await fetch(`${path}${i}/dependencies.json`);

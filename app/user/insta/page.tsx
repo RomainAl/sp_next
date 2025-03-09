@@ -8,6 +8,7 @@ import { useAudioUserStore } from "@/store/audio.user.store";
 import { setInstaCurrentVid, useInstaUserStore } from "@/store/insta.user.store";
 import { peerSound2peerMedia, sendMess } from "@/store/webrtc.user.store";
 import { Heart, MessageCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useWindowSize } from "usehooks-ts";
 
@@ -17,12 +18,14 @@ export default function Home() {
   const ref = useRef<HTMLDivElement>(null);
   const [api, setApi] = useState<CarouselApi>();
   const audioContext = useAudioUserStore((store) => store.audioContext);
+  const startVid = useInstaUserStore((store) => store.startVid);
+
   useEffect(() => {
     if (!api) {
       return;
     }
     console.log("TODO : CHECK IF DON'T NEED TO KILL CAROUSSEL API");
-
+    sendMess({ currentInstaVid: api.selectedScrollSnap() });
     api.on("select", () => {
       sendMess({ currentInstaVid: api.selectedScrollSnap() });
       setInstaCurrentVid(api.selectedScrollSnap());
@@ -48,6 +51,7 @@ export default function Home() {
           align: "center",
           loop: true,
           dragFree: true,
+          startIndex: startVid,
         }}
         orientation="vertical"
         className="size-full"
@@ -65,6 +69,7 @@ export default function Home() {
 const Insta = ({ index }: { index: number }) => {
   const [like, setLike] = useState<boolean>(false);
   const [com, setCom] = useState<boolean>(false);
+  const vidMeta = useInstaUserStore((store) => store.vidMeta[index]);
 
   return (
     <CarouselItem className=" border-blue-700 pt-10 md:basis-1/2 ">
@@ -72,10 +77,11 @@ const Insta = ({ index }: { index: number }) => {
         <Card>
           <CardHeader className="mx-6 p-6">
             <CardTitle className="flex flex-row items-center justify-start gap-5">
-              <InstaAvatar name={String(index)} />
-              <p>Cut aninals</p>
+              <InstaAvatar name={vidMeta.compte} />
+              <p>{vidMeta.compte}</p>
             </CardTitle>
-            <CardDescription>👍🔥 OHHHH toooo mimiiiiiii !! 😍 ❤️🫶🫡</CardDescription>
+            <CardDescription>{vidMeta.name}</CardDescription>
+            <p>{vidMeta.description}</p>
           </CardHeader>
           <CardContent className="flex items-center justify-center p-6">
             <InstaVideo index={index} />
@@ -84,7 +90,7 @@ const Insta = ({ index }: { index: number }) => {
             <Heart size={30} onClick={() => setLike(!like)} fill={like ? "red" : "none"} strokeWidth={like ? 0 : 1} />
             <MessageCircle onClick={() => setCom(!com)} strokeWidth={1} size={30} />
           </CardFooter>
-          <p className="px-6 pb-6 text-sm italic">#cut #animal #super #glad #lifeisbeautiful</p>
+          <p className="px-6 pb-6 text-sm italic">{vidMeta.hashtag}</p>
         </Card>
       </div>
     </CarouselItem>
@@ -99,6 +105,8 @@ const InstaVideo = ({ index }: { index: number }) => {
   const audioContext = useAudioUserStore((store) => store.audioContext);
   const peerSound = useAudioUserStore((store) => store.peerSound);
   const soundRef = useRef<MediaElementAudioSourceNode>(null);
+  const searchParams = useSearchParams();
+  const instaNb: number = searchParams.has("n") ? Number(searchParams.get("n")) : 0;
   useEffect(() => {
     if (ref.current) ref.current.width = width;
   }, [width]);
@@ -135,8 +143,8 @@ const InstaVideo = ({ index }: { index: number }) => {
   return (
     <div className="flex size-full items-center justify-center">
       {pending && <Spinner size="xlarge"></Spinner>}
-      <video className={cn("block", { hidden: pending })} ref={ref} loop preload="none">
-        <source src={`/insta/video${index}.mp4`} type="video/mp4" />
+      <video className={cn("block", { hidden: pending })} ref={ref} playsInline loop preload="none">
+        <source src={`/insta${instaNb}/video${index}.mp4`} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
     </div>

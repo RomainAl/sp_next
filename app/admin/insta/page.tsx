@@ -24,7 +24,7 @@ export default function Home() {
               <p>Audio from people : </p>
               <Separator className="w-1/2 bg-accent" />
               <div className="flex size-full flex-row flex-wrap items-start justify-start gap-0">
-                {userS.map((user) => (
+                {userS.map((user, i) => (
                   <div
                     key={user.id}
                     className={cn("flex w-1/12 flex-col items-center justify-center gap-1 p-1", {
@@ -34,7 +34,7 @@ export default function Home() {
                     })}
                   >
                     <div className="aspect-square w-full">
-                      <AudioMeter stream={user.stream} />
+                      <AudioMeter stream={user.stream} index={i} />
                     </div>
                   </div>
                 ))}

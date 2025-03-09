@@ -8,7 +8,7 @@ export const SoundwaveCanvas = (props: SoundwaveCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const analyser = useAudioUserStore((store) => store.audioAnalyser);
   const params = useSoundVisualizerParamsStore();
-
+  const requestRef = useRef<number>(null);
   const soundVisualizer = (canvas: HTMLCanvasElement, analyser: AnalyserNode, params: soundVisualiserParamsType) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) {
@@ -31,7 +31,7 @@ export const SoundwaveCanvas = (props: SoundwaveCanvasProps) => {
         ctx.fillStyle = params.color;
         ctx.fillRect(i * barWidth, y, rectSize, rectSize);
       }
-      requestAnimationFrame(draw);
+      requestRef.current = requestAnimationFrame(draw);
     };
     draw();
   };
@@ -41,6 +41,12 @@ export const SoundwaveCanvas = (props: SoundwaveCanvasProps) => {
       return;
     }
     if (canvasRef.current) soundVisualizer(canvasRef.current, analyser, params);
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+        console.log("cancelAnimationFrame");
+      }
+    };
   }, [analyser, params]);
 
   return <canvas ref={canvasRef} {...props}></canvas>;

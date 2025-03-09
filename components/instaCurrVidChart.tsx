@@ -23,7 +23,7 @@ export function InstaCurrVidChart() {
       <Card className="size-full">
         <CardHeader className="items-center pb-4">
           <CardTitle>
-            {`Vues vidéos total : ${videoViews.map((v) => v.views).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}`}
+            {`Nombre de vues vidéos : ${videoViews.map((v) => v.views).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}`}
           </CardTitle>
         </CardHeader>
         <CardContent className="pb-0">
@@ -31,7 +31,8 @@ export function InstaCurrVidChart() {
             <RadarChart data={videoViews}>
               <PolarGrid className="fill-[--color-desktop] opacity-10" gridType="circle" />
               <PolarAngleAxis
-                tickLine={true}
+                tick={false}
+                hide={true}
                 axisLine={true}
                 dataKey="id"
                 domain={[0, videoViews.map((m) => m.views).reduce((a, b) => Math.max(a, b), -Infinity)]}
