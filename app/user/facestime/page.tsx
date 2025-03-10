@@ -1,41 +1,21 @@
 "use client";
 
-import { peerMediaCall, setStream, useWebrtcUserStore } from "@/store/webrtc.user.store";
-import { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
+import { changeFacingMode, flash, peerMediaCall, useWebrtcUserStore } from "@/store/webrtc.user.store";
+import { useEffect, useRef, useTransition } from "react";
 
 export default function Home() {
   const myVideoRef = useRef<HTMLVideoElement>(null);
   const peerData = useWebrtcUserStore((store) => store.peerData);
-  const peerMedia = useWebrtcUserStore((store) => store.peerMedia);
   const stream = useWebrtcUserStore((store) => store.stream);
-
-  const handleStream = async () => {
-    await setStream();
-  };
-
-  const handleCall = async () => {
-    await peerMediaCall();
-  };
-
-  const handleData = () => {
-    if (peerData?.open) peerData?.send({ maman: "tamemere3" });
-    console.log(peerData);
-  };
-
-  const handleCloseData = () => {
-    peerData?.send({ maman: "tamemere3" });
-    peerData?.close();
-  };
-
-  const handleClose = () => {
-    peerMedia?.close();
-    console.log(peerMedia);
-  };
-
+  const [pending, startTransition] = useTransition();
   useEffect(() => {
     if (myVideoRef.current) {
       myVideoRef.current.srcObject = stream;
     }
+    startTransition(() => peerMediaCall({ constraintsNb: 0 }));
     return () => {
       stream?.getTracks().forEach((track) => {
         track.stop();
@@ -45,21 +25,38 @@ export default function Home() {
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-7">
-      <p> ID: {peerData?.peer}</p>
-      <video className="w-full" playsInline ref={myVideoRef} autoPlay />
-      <button onClick={handleStream}>stream</button>
-      <button onClick={handleCall}>call</button>
-      <button onClick={handleData}>data</button>
-      <button onClick={handleClose}>Close stream</button>
-      <button onClick={handleCloseData}>Close data</button>
-      <button
+      <Button
         onClick={() => {
-          console.log(peerData);
-          console.log(peerMedia);
+          changeFacingMode("user");
+          peerMediaCall({ constraintsNb: 0 });
         }}
       >
-        console peer
-      </button>
+        CHANGE MODE USER
+      </Button>
+      <Button
+        onClick={() => {
+          changeFacingMode("environment");
+          peerMediaCall({ constraintsNb: 1 });
+        }}
+      >
+        CHANGE MODE ENVIR
+      </Button>
+      <Button
+        onClick={() => {
+          flash(true);
+        }}
+      >
+        FLASH
+      </Button>
+      <Button
+        onClick={() => {
+          flash(false);
+        }}
+      >
+        PAS FLASH
+      </Button>
+      {pending && <Spinner size="xlarge"></Spinner>}
+      <video className={cn("size-full", { hidden: pending })} playsInline ref={myVideoRef} autoPlay />
     </div>
   );
 }

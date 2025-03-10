@@ -10,10 +10,10 @@ export const AudioMeter = ({ stream, index }: { stream: MediaStream | null; inde
   const splitter = audioContext?.createChannelSplitter(1);
   const requestRef = useRef<number>(null);
   const ch = index % (audioContext?.destination.maxChannelCount ?? 2);
-
+  let source: MediaStreamAudioSourceNode | undefined;
   if (stream) {
     if (refAudio.current) refAudio.current.srcObject = stream;
-    const source = audioContext?.createMediaStreamSource(stream);
+    source = audioContext?.createMediaStreamSource(stream);
     if (analyser && splitter && merger) source?.connect(splitter).connect(analyser).connect(merger, 0, ch);
   }
 
@@ -35,17 +35,15 @@ export const AudioMeter = ({ stream, index }: { stream: MediaStream | null; inde
   };
 
   useEffect(() => {
-    if (!analyser) {
-      return;
-    }
+    if (!analyser) return;
     if (ref.current) soundVisualizer(ref.current, analyser);
     return () => {
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current);
-        console.log("cancelAnimationFrame");
-      }
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+      analyser?.disconnect();
+      splitter?.disconnect();
+      source?.disconnect();
     };
-  }, [analyser]);
+  }, [analyser, splitter, source]);
 
   return (
     <div className="size-full" ref={ref}>

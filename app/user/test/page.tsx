@@ -1,32 +1,65 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useAudioUserStore } from "@/store/audio.user.store";
-import { useEffect } from "react";
+import { setStream, useWebrtcUserStore } from "@/store/webrtc.user.store";
+import { useEffect, useRef } from "react";
 
 export default function Home() {
-  const audioContext = useAudioUserStore((store) => store.audioContext);
-  const audioAnalyser = useAudioUserStore((store) => store.audioAnalyser);
-  console.log("TEST RENDERED");
+  const myVideoRef = useRef<HTMLVideoElement>(null);
+  const peerData = useWebrtcUserStore((store) => store.peerData);
+  const peerMedia = useWebrtcUserStore((store) => store.peerMedia);
+  const stream = useWebrtcUserStore((store) => store.stream);
+
+  const handleStream = async () => {
+    await setStream();
+  };
+
+  const handleCall = async () => {
+    // await peerMediaCall();
+  };
+
+  const handleData = () => {
+    if (peerData?.open) peerData?.send({ maman: "tamemere3" });
+    console.log(peerData);
+  };
+
+  const handleCloseData = () => {
+    peerData?.send({ maman: "tamemere3" });
+    peerData?.close();
+  };
+
+  const handleClose = () => {
+    peerMedia?.close();
+    console.log(peerMedia);
+  };
+
   useEffect(() => {
-    if (!audioContext) {
-      return;
+    if (myVideoRef.current) {
+      myVideoRef.current.srcObject = stream;
     }
-    audioAnalyser?.connect(audioContext.destination);
-    audioContext.resume();
-    console.log("resume");
     return () => {
-      audioContext?.suspend();
-      audioAnalyser?.disconnect();
-      console.log("suspend");
+      stream?.getTracks().forEach((track) => {
+        track.stop();
+      });
     };
-  }, [audioContext, audioAnalyser]);
+  }, [stream, peerData]);
 
   return (
-    <>
-      <div className="flex h-screen w-screen flex-col items-center justify-center gap-7">
-        <Button>RIEN</Button>
-      </div>
-    </>
+    <div className="flex h-screen w-screen flex-col items-center justify-center gap-7">
+      <p> ID: {peerData?.peer}</p>
+      <video className="w-full" playsInline ref={myVideoRef} autoPlay />
+      <button onClick={handleStream}>stream</button>
+      <button onClick={handleCall}>call</button>
+      <button onClick={handleData}>data</button>
+      <button onClick={handleClose}>Close stream</button>
+      <button onClick={handleCloseData}>Close data</button>
+      <button
+        onClick={() => {
+          console.log(peerData);
+          console.log(peerMedia);
+        }}
+      >
+        console peer
+      </button>
+    </div>
   );
 }

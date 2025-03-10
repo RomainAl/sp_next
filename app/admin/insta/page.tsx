@@ -58,7 +58,7 @@ export default function Home() {
                       "w-1/6": userS.length > 9 && userS.length < 37,
                     })}
                   >
-                    <UserAvatar2 name={user.id} size={362} />
+                    <UserAvatar2 color="ffffff" name={user.id} size={362} />
                     <div className="absolute top-0 flex size-full items-center justify-center">
                       <p className="rounded-lg border border-primary bg-accent px-5 py-2 text-primary"> {user.name}</p>
                     </div>

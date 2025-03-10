@@ -1,19 +1,15 @@
-import { useAudioUserStore } from "@/store/audio.user.store";
 import { soundVisualiserParamsType, useSoundVisualizerParamsStore } from "@/store/shared.store";
 import { ComponentPropsWithoutRef, useEffect, useRef } from "react";
 
-type SoundwaveCanvasProps = ComponentPropsWithoutRef<"canvas">;
+type SoundwaveCanvasProps = ComponentPropsWithoutRef<"canvas"> & { analyser: AnalyserNode | null };
 
-export const SoundwaveCanvas = (props: SoundwaveCanvasProps) => {
+export const SoundwaveCanvas = ({ analyser, ...props }: SoundwaveCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const analyser = useAudioUserStore((store) => store.audioAnalyser);
   const params = useSoundVisualizerParamsStore();
   const requestRef = useRef<number>(null);
   const soundVisualizer = (canvas: HTMLCanvasElement, analyser: AnalyserNode, params: soundVisualiserParamsType) => {
     const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      return;
-    }
+    if (!ctx) return;
     analyser.fftSize = params.fftSize;
     const times = new Uint8Array(analyser.frequencyBinCount);
     const rectSize = params.rectSize;
@@ -44,7 +40,7 @@ export const SoundwaveCanvas = (props: SoundwaveCanvasProps) => {
     return () => {
       if (requestRef.current) {
         cancelAnimationFrame(requestRef.current);
-        console.log("cancelAnimationFrame");
+        analyser?.disconnect();
       }
     };
   }, [analyser, params]);

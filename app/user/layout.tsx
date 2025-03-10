@@ -23,7 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const getStream = useMessUserStore(useShallow((store) => store.getStream));
   const router = useRouter();
   useEffect(() => {
-    if (!peer) router.push("/");
+    // if (!peer) router.push("/");
     if (goto) router.push("/user/" + goto);
   }, [goto, router, peer]);
 
@@ -32,28 +32,34 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <Link href="/" legacyBehavior passHref>
+            <Link href="/" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>HOME</NavigationMenuLink>
             </Link>
             <NavigationMenuTrigger>INSTRUS</NavigationMenuTrigger>
             <NavigationMenuContent>
-              <Link href="/user/instru?n=0" legacyBehavior passHref>
+              <Link href="/user/instru?n=0" legacyBehavior passHref prefetch={false}>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTRU 0</NavigationMenuLink>
               </Link>
-              <Link href="/user/instru?n=1" legacyBehavior passHref>
+              <Link href="/user/instru?n=1" legacyBehavior passHref prefetch={false}>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTRU 1</NavigationMenuLink>
               </Link>
-              <Link href="/user/instru?n=2" legacyBehavior passHref>
+              <Link href="/user/instru?n=2" legacyBehavior passHref prefetch={false}>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTRU 1</NavigationMenuLink>
               </Link>
             </NavigationMenuContent>
-            <Link href="/user/facestime" legacyBehavior passHref>
+            <Link href="/user/facestime" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>FACESTIME</NavigationMenuLink>
             </Link>
-            <Link href="/user/insta" legacyBehavior passHref>
+            <Link href="/user/insta" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>INSTA</NavigationMenuLink>
             </Link>
-            <Link href="/user/test" legacyBehavior passHref>
+            <Link href="/user/flashes" legacyBehavior passHref prefetch={false}>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>FLASHES</NavigationMenuLink>
+            </Link>
+            <Link href="/user/hacker" legacyBehavior passHref prefetch={true}>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>HACKER</NavigationMenuLink>
+            </Link>
+            <Link href="/user/test" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>TEST</NavigationMenuLink>
             </Link>
           </NavigationMenuItem>

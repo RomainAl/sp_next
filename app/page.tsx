@@ -1,6 +1,5 @@
 "use client";
 
-import { AlertDestructive } from "@/components/alertDestructive";
 import { LogoSP } from "@/components/logoSP";
 import { Button } from "@/components/ui/button";
 // import { Button } from "@/components/ui/button";
@@ -11,29 +10,26 @@ import { Spinner } from "@/components/ui/spinner";
 import { setUserAudio, useAudioUserStore } from "@/store/audio.user.store";
 import { setInstaVidMeta } from "@/store/insta.user.store";
 import { setInitMessUserStore } from "@/store/mess.user.store";
-import { createPeer, peerDataConn, setUserName, useWebrtcUserStore } from "@/store/webrtc.user.store";
+import { createPeer, setUserName } from "@/store/webrtc.user.store";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useRef, useTransition } from "react";
+import { useActionState, useRef } from "react";
 
 // import { toast, Toaster } from "sonner";
 import { Id, Slide, toast, ToastContainer } from "react-toastify";
 
 export default function Home() {
-  const peer = useWebrtcUserStore((store) => store.peer);
+  // const peer = useWebrtcUserStore((store) => store.peer);
+  // const [pending, startTransition] = useTransition();
+  // useEffect(() => {
+  //   if (!peer)
+  //     startTransition(async () => {
+  //       createPeer();
+  //     });
+  // }, [peer]);
 
-  const [pending, startTransition] = useTransition();
-  useEffect(() => {
-    if (!peer)
-      startTransition(async () => {
-        createPeer();
-      });
-  }, [peer]);
-
-  // const value = 0;
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-5">
-      {/* <TestCharts /> */}
       <div className="flex w-1/2 max-w-sm flex-col items-center justify-center">
         <LogoSP />
         <p className="text-2xl italic text-primary">smart.phonics</p>
@@ -48,8 +44,8 @@ export default function Home() {
           <br /> Et go !
         </p>
       </div>
-      <MyFormComponent nopeer={!peer} />
-      {pending && !peer && <AlertDestructive title={"OUPS !"} message={"Echec de la connection au serveur (recharge !)"} />}
+      <MyFormComponent nopeer={false} />
+      {/* {pending && !peer && <AlertDestructive title={"OUPS !"} message={"Echec de la connection au serveur (recharge !)"} />} */}
       <ToastContainer draggable transition={Slide} position="top-center" theme="dark" className="mt-1 w-full gap-2 px-8" />
     </div>
   );
@@ -60,17 +56,17 @@ const MyFormComponent = ({ nopeer }: { nopeer: boolean }) => {
   const toast_loading = useRef<Id>(null);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [message, submitaction, pending] = useActionState(async (_: unknown, formData: FormData) => {
+  const [message, submitaction, pending] = useActionState((_: unknown, formData: FormData) => {
     toast_loading.current = toast.loading("Loading...", { progress: 0.3, className: "rounded-lg bg-primary text-sm" });
     try {
       setInitMessUserStore();
       const name: string = formData.get("username") as string;
       if (name !== "") setUserName(name);
       toast.update(toast_loading.current, { render: "Loading... (...audio tools)", progress: 0.4 });
-      if (!audioContext) await setUserAudio();
+      if (!audioContext) setUserAudio();
       toast.update(toast_loading.current, { render: "Loading... (...connexion)", progress: 0.9 });
+      createPeer();
 
-      await peerDataConn();
       toast.update(toast_loading.current, {
         render: "Tout est bon !",
         type: "success",

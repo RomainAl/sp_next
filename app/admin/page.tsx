@@ -16,11 +16,11 @@ export default function Home() {
   const goto = useMessAdminStore((store) => store.goto);
   const router = useRouter();
 
-  if (!peer) createPeer();
   const [message, submitaction, pending] = useActionState(async (_: unknown, formData: FormData) => {
     try {
       const password: string = formData.get("password") as string;
       if (password !== "") return "error";
+      if (!peer) createPeer();
       setAdminAudio();
       router.push(`/admin/${goto}`);
       return "success";
@@ -45,8 +45,8 @@ export default function Home() {
       <form action={submitaction} className="flex w-2/4 max-w-sm flex-col items-center justify-center gap-4">
         <div className="flex w-full flex-row items-center space-x-2">
           <Input type="text" name="password" placeholder={"Password"} />
-          <Button disabled={!peer || pending} type="submit">
-            {!peer || pending ? <Spinner className="text-primary-foreground" /> : <ArrowRight strokeWidth={2.25} />}
+          <Button disabled={pending} type="submit">
+            {pending ? <Spinner className="text-primary-foreground" /> : <ArrowRight strokeWidth={2.25} />}
           </Button>
         </div>
       </form>

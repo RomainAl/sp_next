@@ -36,7 +36,7 @@ export function Call() {
             variant={"default"}
             size={"circle"}
             onClick={() => {
-              peerMediaCall();
+              peerMediaCall({ constraintsNb: 0 });
               if (goto) setGoto(goto);
               setOpen(false);
             }}

@@ -1,9 +1,10 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { admin2userDataType } from "./shared.store";
+import { sendMess } from "./webrtc.admin.store";
 
 const initAdmin2UserData: admin2userDataType = {
-  goto: "instru?n=0", // FOR USER CONNECTION GOTO
+  goto: "flashes", // FOR USER CONNECTION GOTO
 };
 
 export const useMessAdminStore = create(
@@ -14,6 +15,7 @@ export const useMessAdminStore = create(
 
 export const setCurrentPage = (goto: string) => {
   useMessAdminStore.setState({ goto });
+  sendMess({ goto });
 };
 
 export const setInitMessUserStore = () => {

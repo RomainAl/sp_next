@@ -1,8 +1,9 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useWebrtcAdminStore } from "@/store/webrtc.admin.store";
+import { sendMess, useWebrtcAdminStore } from "@/store/webrtc.admin.store";
 import { useEffect, useRef } from "react";
 
 export default function Home() {
@@ -19,6 +20,13 @@ export default function Home() {
 
   return (
     <div className="flex h-screen w-screen flex-wrap items-start text-center">
+      <Button
+        onClick={() => {
+          sendMess({ flashes_trig: Date.now() });
+        }}
+      >
+        FLASH
+      </Button>
       {userS.map((user, i) => (
         <div key={user.id} className={cn("flex w-1/3 gap-5 p-0")}>
           <Card className="m-0 size-fit p-0">
@@ -30,7 +38,7 @@ export default function Home() {
                 ref={(input) => {
                   callingVideoRefs.current[i] = input;
                 }}
-                className="size-full rounded-lg"
+                className="size-full rounded-lg brightness-125 contrast-100 grayscale"
                 playsInline
                 autoPlay
               />

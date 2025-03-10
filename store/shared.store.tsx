@@ -4,11 +4,15 @@ import { devtools } from "zustand/middleware";
 export type admin2userDataType = {
   goto?: string;
   getStream?: { call: boolean; goto: string } | undefined;
+  toast?: toastStoreType;
+  flashes_trig?: number;
+  flashes_time?: number;
 };
 
 export type user2adminDataType = {
   name?: string;
   currentInstaVid?: number;
+  toast?: toastStoreType;
 };
 
 export type soundVisualiserParamsType = {
@@ -32,6 +36,18 @@ export const initSoundVisualizerParams: soundVisualiserParamsType = {
   rand: 0,
   stroke: false,
 };
+
+type toastStoreType = {
+  title: string;
+  message?: string;
+};
+
+export const useToastStore = create(
+  devtools<toastStoreType>(() => ({
+    title: "",
+    message: "",
+  }))
+);
 
 export const useSoundVisualizerParamsStore = create(
   devtools<soundVisualiserParamsType>(() => ({

@@ -98,7 +98,7 @@
     --toastify-spinner-color-empty-area: #fff;
     --toastify-color-progress-light: rgb(255, 255, 255);
     --toastify-color-progress-dark: rgb(255, 255, 255);
-    --toastify-color-progress-info: rgb(255, 255, 255);
+    --toastify-color-progress-info: rgb(229, 115, 51);
     --toastify-color-progress-success: var(--toastify-color-success);
     --toastify-color-progress-warning: var(--toastify-color-warning);
     --toastify-color-progress-error: var(--toastify-color-error);

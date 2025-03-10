@@ -69,10 +69,11 @@ export default function Home() {
 const Insta = ({ index }: { index: number }) => {
   const [like, setLike] = useState<boolean>(false);
   const [com, setCom] = useState<boolean>(false);
+  const vidMeta = useInstaUserStore((store) => store.vidMeta[index]);
   const username = useWebrtcUserStore((store) => store.username);
   const setSendLike = () => {
     setLike(!like);
-    sendMess({ toast: { title: `❤️ ${username} aime la vidéo de TOTO` } });
+    sendMess({ toast: { title: `❤️ ${username} aime la vidéo de ${vidMeta.compte}` } });
   };
   return (
     <CarouselItem className=" border-blue-700 pt-10 md:basis-1/2 ">
@@ -80,11 +81,11 @@ const Insta = ({ index }: { index: number }) => {
         <Card>
           <CardHeader className="mx-6 p-6">
             <CardTitle className="flex flex-row items-center justify-start gap-5">
-              <InstaAvatar name={"TOTO"} />
-              <p>{"TOTO"}</p>
+              <InstaAvatar name={vidMeta.compte} />
+              <p>{vidMeta.compte}</p>
             </CardTitle>
-            <CardDescription>{"TOTO"}</CardDescription>
-            <p>{"TOTO"}</p>
+            <CardDescription>{vidMeta.name}</CardDescription>
+            <p>{vidMeta.description}</p>
           </CardHeader>
           <CardContent className="flex items-center justify-center p-6">
             <InstaVideo index={index} />
@@ -93,7 +94,7 @@ const Insta = ({ index }: { index: number }) => {
             <Heart size={30} onClick={() => setSendLike()} fill={like ? "red" : "none"} strokeWidth={like ? 0 : 1} />
             <MessageCircle onClick={() => setCom(!com)} strokeWidth={1} size={30} />
           </CardFooter>
-          <p className="px-6 pb-6 text-sm italic">{"TOTO"}</p>
+          <p className="px-6 pb-6 text-sm italic">{vidMeta.hashtag}</p>
         </Card>
       </div>
     </CarouselItem>

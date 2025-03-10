@@ -14,7 +14,8 @@ type webrtcUserStoreType = {
   peerData: DataConnection | null;
   peerMedia: MediaConnection | null;
   stream: MediaStream | null;
-  mediaconstraints: MediaStreamConstraints[];
+  mediaVideoFacingMode: "user" | "environment";
+  mediaConstraints: MediaStreamConstraints[];
 };
 
 // WEBRTC :
@@ -29,7 +30,8 @@ export const useWebrtcUserStore = create(
     peerData: null,
     peerMedia: null,
     stream: null,
-    mediaconstraints: [
+    mediaVideoFacingMode: "user",
+    mediaConstraints: [
       {
         audio: {
           noiseSuppression: true,
@@ -74,7 +76,7 @@ export const setUserName = (username: string) => {
   useWebrtcUserStore.setState({ username });
 };
 
-export const createPeer = async () => {
+export const createPeer = () => {
   // if (!util.supports.data) throw new Error("E_01");
   // if (!util.supports.audioVideo) throw new Error("E_02");
 
@@ -91,14 +93,14 @@ export const createPeer = async () => {
 
   peer.on("open", (id) => {
     console.log(id + " - my peer is open");
+    peerDataConn();
   });
   useWebrtcUserStore.setState({ peer });
 };
 
-export const peerDataConn = async () => {
+export const peerDataConn = () => {
   const peer = useWebrtcUserStore.getState().peer;
   if (!peer) createPeer();
-
   if (peer && peer.open) {
     const peerData_ = useWebrtcUserStore.getState().peerData;
     if (!peerData_ || !peerData_.open) {
@@ -112,12 +114,7 @@ export const peerDataConn = async () => {
           console.log(peerData.peer + " - sent mess :");
           console.log(data);
           const mess = data as admin2userDataType;
-          if (mess.goto) {
-            useMessUserStore.setState({ goto: mess.goto });
-          }
-          if (mess.getStream) {
-            useMessUserStore.setState({ getStream: mess.getStream });
-          }
+          useMessUserStore.setState(mess);
         });
 
         peerData.on("close", () => {
@@ -144,7 +141,7 @@ export const peerDataConn = async () => {
   }
 };
 
-export const peerMediaCall = async () => {
+export const peerMediaCall = ({ constraintsNb = 0 }: { constraintsNb?: number }) => {
   const stream = useWebrtcUserStore.getState().stream;
   const peerMedia = useWebrtcUserStore.getState().peerMedia;
   if (stream && stream.active) {
@@ -156,17 +153,17 @@ export const peerMediaCall = async () => {
       useWebrtcUserStore.setState({ peerMedia });
     }
   } else {
-    const constraints = useWebrtcUserStore.getState().mediaconstraints;
+    const constraints = useWebrtcUserStore.getState().mediaConstraints;
     navigator.mediaDevices
-      .getUserMedia(constraints[0])
+      .getUserMedia(constraints[constraintsNb])
       .then((stream) => {
         useWebrtcUserStore.setState({ stream });
       })
-      .then(() => peerMediaCall());
+      .then(() => peerMediaCall({ constraintsNb }));
   }
 };
 
-export const peerSound2peerMedia = async () => {
+export const peerSound2peerMedia = () => {
   const peerMedia = useWebrtcUserStore.getState().peerMedia;
   const peerSound = useAudioUserStore.getState().peerSound;
   if (peerSound) {
@@ -187,8 +184,8 @@ export const peerSound2peerMedia = async () => {
   }
 };
 
-export const setStream = async () => {
-  const constraints = useWebrtcUserStore.getState().mediaconstraints;
+export const setStream = () => {
+  const constraints = useWebrtcUserStore.getState().mediaConstraints;
   navigator.mediaDevices.getUserMedia(constraints[0]).then((stream) => {
     useWebrtcUserStore.setState({ stream });
   });
@@ -197,4 +194,22 @@ export const setStream = async () => {
 export const sendMess = (mess: user2adminDataType) => {
   const peerData = useWebrtcUserStore.getState().peerData;
   if (peerData?.open) peerData?.send(mess);
+};
+
+export const changeFacingMode = (facingMode: "user" | "environment") => {
+  useWebrtcUserStore.setState({ mediaVideoFacingMode: facingMode });
+};
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+export const flash = (onFlash: boolean) => {
+  const stream = useWebrtcUserStore.getState().stream;
+  if (stream) {
+    const track = stream.getVideoTracks()[0];
+    try {
+      (track as any).applyConstraints({ advanced: [{ torch: onFlash }] });
+    } catch (e) {
+      console.log(e);
+      console.log("Impossible d'utiliser la torche");
+    }
+  }
 };

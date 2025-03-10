@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { setInstaCurrentVid } from "./insta.admin.store";
 import { useMessAdminStore } from "./mess.admin.store";
-import { user2adminDataType } from "./shared.store";
+import { admin2userDataType, user2adminDataType, useToastStore } from "./shared.store";
 
 type userType = {
   id: string;
@@ -35,7 +35,7 @@ export const useWebrtcAdminStore = create(
   }))
 );
 
-export const createPeer = async () => {
+export const createPeer = () => {
   // PEER :
   // if (!util.supports.data) throw new Error("E_01");
   // if (!util.supports.audioVideo) throw new Error("E_02");
@@ -78,6 +78,9 @@ export const createPeer = async () => {
               userS: [...state.userS.filter((p) => p.id !== peerData.peer), user],
               bitrates: [...state.bitrates.filter((p) => p.id !== peerData.peer), B],
             }));
+          }
+          if (userData.toast) {
+            useToastStore.setState({ title: userData.toast.title, message: "" });
           }
           if (userData.currentInstaVid) {
             setInstaCurrentVid(userData.currentInstaVid);
@@ -161,4 +164,11 @@ export const createPeer = async () => {
 export const setBitrates = ({ id, bitrate, bit, time }: webrtcBiterateType) => {
   const bitrateUpdate: webrtcBiterateType = { id, bitrate, bit, time };
   useWebrtcAdminStore.setState((state) => ({ bitrates: [...state.bitrates.filter((p) => p.id !== id), bitrateUpdate] }));
+};
+
+export const sendMess = (mess: admin2userDataType) => {
+  const userS = useWebrtcAdminStore.getState().userS;
+  userS.forEach((user) => {
+    if (user.peerData?.open) user.peerData.send(mess);
+  });
 };

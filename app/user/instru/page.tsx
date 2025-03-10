@@ -12,7 +12,6 @@ export default function Home() {
   const audioContext = useAudioUserStore((store) => store.audioContext);
   const intruNb: number = searchParams.has("n") ? Number(searchParams.get("n")) : 0;
   const instru = useAudioUserStore((store) => store.instrus[intruNb]);
-
   const analyser = useAudioUserStore((store) => store.audioAnalyser);
 
   const { width = 0 } = useWindowSize();
@@ -43,7 +42,7 @@ export default function Home() {
       <div className="flex h-screen w-screen flex-col items-center justify-center gap-7">
         <p>Instru n°{intruNb}</p>
         <div className="flex w-2/3 flex-col rounded-full border border-primary/50 bg-background shadow transition-colors">
-          <SoundwaveCanvas width={width} height={width / 5} />
+          <SoundwaveCanvas width={width} height={width / 5} analyser={analyser} />
         </div>
         <div className="flex w-2/3 flex-col gap-4">
           {instru?.parameters.map((param) => (
