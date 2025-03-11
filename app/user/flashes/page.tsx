@@ -15,7 +15,6 @@ export default function Home() {
   const [pending, startTransition] = useTransition();
   const [pendingFlash, startTransitionFlash] = useTransition();
   const flashRef = useRef<ReturnType<typeof setTimeout>>(null);
-  console.log("RENDER");
   useEffect(() => {
     if (myVideoRef.current) {
       myVideoRef.current.srcObject = stream;
@@ -34,12 +33,10 @@ export default function Home() {
     if (flashes_trig !== 0) {
       if (flashRef.current) clearInterval(flashRef.current);
       startTransitionFlash(() => {
-        console.log("flashing");
         flash(true);
         flashRef.current = setTimeout(() => {
           flash(false);
-          console.log("stop flashing");
-        }, 500);
+        }, 30);
       });
       return () => {
         if (flashRef.current) clearInterval(flashRef.current);

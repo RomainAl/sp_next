@@ -58,6 +58,13 @@ export const useWebrtcUserStore = create(
       },
       {
         audio: {
+          noiseSuppression: true,
+          echoCancellation: true,
+        },
+        video: false,
+      },
+      {
+        audio: {
           sampleRate: 44100,
           sampleSize: 16,
           noiseSuppression: false,

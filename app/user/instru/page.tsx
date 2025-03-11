@@ -3,6 +3,7 @@
 import { SoundwaveCanvas } from "@/components/soundwaveCanvas";
 import { Slider } from "@/components/ui/slider";
 import { useAudioUserStore } from "@/store/audio.user.store";
+import { initSoundVisualizerParams, setSoundVisualizerParams } from "@/store/shared.store";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useWindowSize } from "usehooks-ts";
@@ -21,6 +22,10 @@ export default function Home() {
       param.value = value;
     }
   };
+
+  useEffect(() => {
+    setSoundVisualizerParams(initSoundVisualizerParams);
+  }, []);
 
   useEffect(() => {
     if (!audioContext || !instru || !analyser) {

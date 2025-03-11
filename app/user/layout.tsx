@@ -59,8 +59,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link href="/user/hacker" legacyBehavior passHref prefetch={true}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>HACKER</NavigationMenuLink>
             </Link>
-            <Link href="/user/test" legacyBehavior passHref prefetch={false}>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>TEST</NavigationMenuLink>
+            <Link href="/user/larsen" legacyBehavior passHref prefetch={false}>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>LARSEN</NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
         </NavigationMenuList>

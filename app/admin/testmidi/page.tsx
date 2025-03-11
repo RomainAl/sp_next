@@ -33,12 +33,15 @@ export default function Home() {
         console.warn("No inputs yet");
         return;
       }
-      const input = new MIDIValInput(access.inputs[0]);
-      console.log(input);
-      input.onAllControlChange(({ control, value }) => {
-        console.log(control + " " + value);
-        // console.log(`[CC] ${ControlChangeToReadableName[control]}: ${value}`);
-      });
+      const accessSel = access.inputs.find((i) => i.name === "Réseau AL");
+      if (accessSel) {
+        const input = new MIDIValInput(accessSel);
+        console.log(input);
+        input.onAllControlChange(({ control, value }) => {
+          console.log(control + " " + value);
+          // console.log(`[CC] ${ControlChangeToReadableName[control]}: ${value}`);
+        });
+      }
     });
   };
 

@@ -13,10 +13,41 @@ import {
 import { setCurrentPage } from "@/store/mess.admin.store";
 import { useToastStore } from "@/store/shared.store";
 import { sendMess } from "@/store/webrtc.admin.store";
+import { MIDIVal, MIDIValInput } from "@midival/core";
 import Link from "next/link";
 import { Slide, toast, ToastContainer } from "react-toastify";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const connectMidi = () => {
+    MIDIVal.connect().then((access) => {
+      console.log(access);
+      console.log("Input Devices", access.inputs);
+      console.log("Output Devices", access.outputs);
+      if (!access.inputs) {
+        console.warn("No inputs yet");
+        return;
+      }
+      const accessSel = access.inputs.find((i) => i.name === "Réseau AL");
+      if (accessSel) {
+        const input = new MIDIValInput(accessSel);
+        input.onAllNoteOn((message) => {
+          if (message.channel === 11 && message.velocity > 0) {
+            switch (message.note) {
+              case 60:
+                sendMess({ flashes_trig: Date.now() });
+                break;
+              case 80:
+                const page: string = "hacker";
+                setCurrentPage(page);
+                sendMess({ goto: page });
+                break;
+            }
+            console.log(`[Note On] Note: ${message.note} Velocity: ${message.velocity} Channel: ${message.channel}`);
+          }
+        });
+      }
+    });
+  };
   const myToast = useToastStore((store) => store);
   if (myToast.title)
     toast(myToast.title, {
@@ -130,13 +161,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Button>
               </NavigationMenuLink>
             </Link>
-            <Link href="/admin/miditest" legacyBehavior passHref prefetch={false}>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>TEST</NavigationMenuLink>
+            <Link href="/admin/larsen" legacyBehavior passHref prefetch={false}>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                <Button
+                  onClick={() => {
+                    const page: string = "larsen";
+                    setCurrentPage(page);
+                    sendMess({ goto: page });
+                  }}
+                >
+                  LARSEN
+                </Button>
+              </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-
+      <Button onClick={() => connectMidi()}>MIDI</Button>
       <main>{children}</main>
       <ToastContainer draggable transition={Slide} position="top-center" theme="dark" className="mt-1 gap-1" />
     </>

@@ -9,9 +9,11 @@ export default function Home() {
   useEffect(() => {
     const doScroll = setInterval(() => {
       if (refDiv.current) {
-        refDiv.current.scrollTop += 20;
+        refDiv.current.scrollTop += 10;
         if (refDiv.current.scrollTop >= refDiv.current.scrollHeight - refDiv.current.clientHeight) {
-          clearInterval(doScroll);
+          // clearInterval(doScroll);
+          console.log("reset");
+          refDiv.current.scrollTop = 0;
         }
       }
     }, 10);

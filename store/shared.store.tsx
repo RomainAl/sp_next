@@ -29,7 +29,7 @@ export type soundVisualiserParamsType = {
 export const initSoundVisualizerParams: soundVisualiserParamsType = {
   fftSize: 512,
   rectSize: 5,
-  rectSize_: 10,
+  rectSize_: 5,
   gain: 10.0,
   color: "rgb(229, 115, 51)",
   smoothingTimeConstant: 1.0,
@@ -54,3 +54,11 @@ export const useSoundVisualizerParamsStore = create(
     ...initSoundVisualizerParams,
   }))
 );
+
+export const setSoundVisualizerParams = (params: soundVisualiserParamsType) => {
+  useSoundVisualizerParamsStore.setState(params);
+};
+
+export const setSoundVisualizerParamsRectSize_ = (rectSize_: number) => {
+  useSoundVisualizerParamsStore.setState({ rectSize_ });
+};
