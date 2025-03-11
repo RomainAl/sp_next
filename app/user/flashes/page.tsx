@@ -2,7 +2,7 @@
 
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { initFlashTrig, useMessUserStore } from "@/store/mess.user.store";
+import { useMessUserStore } from "@/store/mess.user.store";
 import { flash, peerMediaCall, useWebrtcUserStore } from "@/store/webrtc.user.store";
 import { useEffect, useRef, useTransition } from "react";
 
@@ -11,15 +11,19 @@ export default function Home() {
   const peerData = useWebrtcUserStore((store) => store.peerData);
   const stream = useWebrtcUserStore((store) => store.stream);
   const flashes_trig = useMessUserStore((store) => store.flashes_trig);
-  const flashes_time = useMessUserStore((store) => store.flashes_time);
+  // const flashes_time = useMessUserStore((store) => store.flashes_time);
   const [pending, startTransition] = useTransition();
-
+  const [pendingFlash, startTransitionFlash] = useTransition();
+  const flashRef = useRef<ReturnType<typeof setTimeout>>(null);
+  console.log("RENDER");
   useEffect(() => {
     if (myVideoRef.current) {
       myVideoRef.current.srcObject = stream;
     }
+    console.log("TODO : FAIRE MIEUX ! 1");
     startTransition(() => peerMediaCall({ constraintsNb: 1 }));
     return () => {
+      console.log("TODO : FAIRE MIEUX ! 2");
       stream?.getTracks().forEach((track) => {
         track.stop();
       });
@@ -28,23 +32,31 @@ export default function Home() {
 
   useEffect(() => {
     if (flashes_trig !== 0) {
-      flash(true);
-      console.log("flashing");
-      const flashTimeout = setTimeout(() => {
-        flash(false);
-        console.log("stop flashing");
-      }, flashes_time);
+      if (flashRef.current) clearInterval(flashRef.current);
+      startTransitionFlash(() => {
+        console.log("flashing");
+        flash(true);
+        flashRef.current = setTimeout(() => {
+          flash(false);
+          console.log("stop flashing");
+        }, 500);
+      });
       return () => {
-        clearInterval(flashTimeout);
-        initFlashTrig();
+        if (flashRef.current) clearInterval(flashRef.current);
+        console.log("init flashing");
       };
     }
-  }, [flashes_trig, flashes_time]);
+  }, [flashes_trig]);
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-7">
       {pending && <Spinner size="xlarge"></Spinner>}
-      <video className={cn("grayscale brightness-125 contrast-100 size-full", { hidden: pending })} playsInline ref={myVideoRef} autoPlay />
+      <video
+        className={cn("hue-rotate-180 brightness-125 contrast-200 size-full", { hidden: pending, invert: pendingFlash })}
+        playsInline
+        ref={myVideoRef}
+        autoPlay
+      />
     </div>
   );
 }
