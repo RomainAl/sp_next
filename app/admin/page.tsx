@@ -4,7 +4,7 @@ import { LogoSP } from "@/components/logoSP";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { setAdminAudio } from "@/store/audio.admin.store";
+import { setAdminAudio, setAudioAnalyser } from "@/store/audio.admin.store";
 import { useMessAdminStore } from "@/store/mess.admin.store";
 import { createPeer, useWebrtcAdminStore } from "@/store/webrtc.admin.store";
 import { ArrowRight } from "lucide-react";
@@ -22,6 +22,7 @@ export default function Home() {
       if (password !== "") return "error";
       if (!peer) createPeer();
       setAdminAudio();
+      setAudioAnalyser();
       router.push(`/admin/${goto}`);
       return "success";
     } catch (e) {

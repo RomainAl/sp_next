@@ -12,24 +12,23 @@ export default function Home() {
   const analyser = useAudioUserStore((store) => store.audioAnalyser);
   const { width = 0, height = 0 } = useWindowSize();
   const stream = useWebrtcUserStore((store) => store.stream);
+  const filter = useAudioUserStore((store) => store.filter);
   const [pending, startTransition] = useTransition();
   console.log(pending);
 
-  useEffect(() => {
-    setSoundVisualizerParams({
-      fftSize: 512,
-      rectSize: 10,
-      rectSize_: 10,
-      gain: 1,
-      color: "white",
-      smoothingTimeConstant: 1.0,
-      rand: 0,
-      stroke: false,
-    });
-  }, []);
+  setSoundVisualizerParams({
+    fftSize: 512,
+    rectSize: 10,
+    rectSize_: 10,
+    gain: 1,
+    color: "white",
+    smoothingTimeConstant: 1.0,
+    rand: 0,
+    stroke: false,
+  });
 
   useEffect(() => {
-    if (!audioContext || !analyser) {
+    if (!audioContext || !analyser || !filter) {
       return;
     }
     if (!stream) startTransition(() => peerMediaCall({ constraintsNb: 2 }));
@@ -37,17 +36,18 @@ export default function Home() {
     if (stream) {
       analyser.connect(audioContext.destination);
       const source = audioContext.createMediaStreamSource(stream);
-      source.connect(analyser);
+      source.connect(filter.node).connect(analyser);
       audioContext.resume();
     }
     return () => {
       analyser?.disconnect();
       audioContext?.suspend();
+      filter?.node.disconnect();
       stream?.getTracks().forEach((track) => {
         track.stop();
       });
     };
-  }, [audioContext, analyser, stream]);
+  }, [audioContext, analyser, stream, filter]);
 
   return (
     <>

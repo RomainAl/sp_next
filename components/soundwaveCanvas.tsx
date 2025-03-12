@@ -18,22 +18,40 @@ export const SoundwaveCanvas = ({ analyser, ...props }: SoundwaveCanvasProps) =>
     let rectSize_ = useSoundVisualizerParamsStore.getState().rectSize_;
     const gain = useSoundVisualizerParamsStore.getState().gain;
     const barWidth = canvas[isVertical ? "height" : "width"] / analyser.frequencyBinCount;
+    const stroke = useSoundVisualizerParamsStore.getState().stroke;
+    const rand = useSoundVisualizerParamsStore.getState().rand;
     let meanVal = 0;
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (Math.random() * rand < 0.1) ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       let value;
       analyser.getByteTimeDomainData(times);
 
-      for (let i = 0; i < analyser.frequencyBinCount; i++) {
-        value = times[i] / 256 - 0.5;
-        if (Math.abs(value) < 0.01) value = 0;
-        meanVal += Math.abs(value);
-        const z = Math.min(Math.max(value * canvas[wOrh] * gain + canvas[wOrh] * 0.5, 0), canvas[wOrh]) - rectSize / 2;
-        ctx.fillStyle = useSoundVisualizerParamsStore.getState().color;
-        if (isVertical) {
-          ctx.fillRect(z, i * barWidth, rectSize_, rectSize_);
-        } else {
-          ctx.fillRect(i * barWidth, z, rectSize_, rectSize_);
+      if (stroke) {
+        for (let i = 0; i < analyser.frequencyBinCount; i++) {
+          value = times[i] / 256 - 0.5;
+          const z = Math.min(Math.max(value * canvas[wOrh] * gain + canvas[wOrh] * 0.5, 0), canvas[wOrh]) - rectSize / 2;
+          value = Math.abs(value);
+          ctx.strokeStyle = useSoundVisualizerParamsStore.getState().color;
+          if (isVertical) {
+            ctx.strokeRect(z, i * barWidth, rectSize_ * (1 - value), rectSize_ * (1 - value));
+          } else {
+            ctx.strokeRect(i * barWidth, z, rectSize_ * (1 - value), rectSize_ * (1 - value));
+          }
+          ctx.lineWidth = value * value * value * value * 10000;
+        }
+      } else {
+        for (let i = 0; i < analyser.frequencyBinCount; i++) {
+          value = times[i] / 256 - 0.5;
+          if (Math.abs(value) < 0.01) value = 0;
+          meanVal += Math.abs(value);
+          const z = Math.min(Math.max(value * canvas[wOrh] * gain + canvas[wOrh] * 0.5, 0), canvas[wOrh]) - rectSize / 2;
+          ctx.fillStyle = useSoundVisualizerParamsStore.getState().color;
+          if (isVertical) {
+            ctx.fillRect(z, i * barWidth, rectSize_, rectSize_);
+          } else {
+            ctx.fillRect(i * barWidth, z, rectSize_, rectSize_);
+          }
         }
       }
       meanVal /= analyser.frequencyBinCount;

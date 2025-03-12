@@ -4,7 +4,7 @@ import { admin2userDataType } from "./shared.store";
 import { sendMess } from "./webrtc.admin.store";
 
 const initAdmin2UserData: admin2userDataType = {
-  goto: "instru", // FOR USER CONNECTION GOTO
+  goto: "nikedal", // FOR USER CONNECTION GOTO
 };
 
 export const useMessAdminStore = create(

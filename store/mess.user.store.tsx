@@ -7,6 +7,7 @@ const initAdmin2UserData: admin2userDataType = {
   getStream: undefined,
   flashes_time: 1000,
   flashes_trig: 0,
+  gain: 1,
 };
 
 export const useMessUserStore = create(
@@ -18,6 +19,7 @@ export const useMessUserStore = create(
 export const setGoto = (goto: string) => {
   useMessUserStore.setState({ goto });
 };
+
 export const setInitMessUserStore = () => {
   useMessUserStore.setState(initAdmin2UserData);
 };

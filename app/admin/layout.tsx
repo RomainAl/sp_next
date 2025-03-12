@@ -174,6 +174,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Button>
               </NavigationMenuLink>
             </Link>
+            <Link href="/admin/nikedal" legacyBehavior passHref prefetch={false}>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                <Button
+                  onClick={() => {
+                    const page: string = "nikedal";
+                    setCurrentPage(page);
+                    sendMess({ goto: page });
+                  }}
+                >
+                  NIKEDAL
+                </Button>
+              </NavigationMenuLink>
+            </Link>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>

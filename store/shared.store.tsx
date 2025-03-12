@@ -7,6 +7,7 @@ export type admin2userDataType = {
   toast?: toastStoreType;
   flashes_trig?: number;
   flashes_time?: number;
+  gain?: number;
 };
 
 export type user2adminDataType = {

@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { customAlphabet } from "nanoid";
 import type { DataConnection, MediaConnection } from "peerjs";
 import Peer from "peerjs";
 import { create } from "zustand";
@@ -19,6 +19,7 @@ type webrtcUserStoreType = {
 };
 
 // WEBRTC :
+const nanoid = customAlphabet("1234567890abcdef", 10);
 const randomId = "ID" + nanoid(6) + String(Date.now());
 const adminId = "admin";
 

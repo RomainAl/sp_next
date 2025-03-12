@@ -5,7 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { useAudioUserStore } from "@/store/audio.user.store";
 import { initSoundVisualizerParams, setSoundVisualizerParams } from "@/store/shared.store";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useWindowSize } from "usehooks-ts";
 
 export default function Home() {
@@ -14,7 +14,7 @@ export default function Home() {
   const intruNb: number = searchParams.has("n") ? Number(searchParams.get("n")) : 0;
   const instru = useAudioUserStore((store) => store.instrus[intruNb]);
   const analyser = useAudioUserStore((store) => store.audioAnalyser);
-
+  const refOutports = useRef<HTMLParagraphElement>(null);
   const { width = 0 } = useWindowSize();
   const sliderValChange = (sliderName: string, value: number) => {
     const param = instru?.parametersById.get(sliderName);
@@ -22,10 +22,7 @@ export default function Home() {
       param.value = value;
     }
   };
-
-  useEffect(() => {
-    setSoundVisualizerParams(initSoundVisualizerParams);
-  }, []);
+  setSoundVisualizerParams(initSoundVisualizerParams);
 
   useEffect(() => {
     if (!audioContext || !instru || !analyser) {
@@ -35,10 +32,24 @@ export default function Home() {
     instru.node.connect(analyser);
     analyser.connect(audioContext.destination);
     audioContext.resume();
+    if (instru.outports.length < 1) {
+      return;
+    } else {
+    }
+    instru.messageEvent.subscribe((ev) => {
+      // Ignore message events that don't belong to an outport
+      if (instru.outports.findIndex((elt) => elt.tag === ev.tag) < 0) return;
+      // Message events have a tag as well as a payload
+      if (refOutports.current) {
+        refOutports.current.innerHTML = `<strong>${ev.tag}</strong> : ${ev.payload}`;
+      }
+    });
+
     return () => {
       analyser?.disconnect();
       instru?.node.disconnect();
       audioContext?.suspend();
+      instru.messageEvent.removeAllSubscriptions();
     };
   }, [audioContext, instru, analyser]);
 
@@ -56,13 +67,14 @@ export default function Home() {
               <Slider
                 min={param.min}
                 max={param.max}
-                step={(param.max - param.min) / 10}
+                step={(param.max - param.min) / 100}
                 defaultValue={[param.initialValue]}
                 onValueChange={(value) => sliderValChange(param.name, value[0])}
               />
             </div>
           ))}
         </div>
+        <p className="text-sm text-primary" ref={refOutports}></p>
       </div>
     </>
   );

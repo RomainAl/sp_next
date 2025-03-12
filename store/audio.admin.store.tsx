@@ -30,3 +30,27 @@ export const setAdminAudio = () => {
     merger: merger,
   });
 };
+
+export const setAudioAnalyser = () => {
+  const ctx = useAudioAdminStore.getState().audioContext;
+  const audioAnalyser = useAudioAdminStore.getState().audioAnalyser;
+  navigator.mediaDevices
+    .getUserMedia({
+      audio: {
+        sampleRate: 44100,
+        sampleSize: 16,
+        noiseSuppression: false,
+        echoCancellation: false,
+        channelCount: 1,
+        autoGainControl: true,
+      },
+      video: false,
+    })
+    .then((stream) => {
+      const source = ctx?.createMediaStreamSource(stream);
+      if (audioAnalyser) {
+        source?.connect(audioAnalyser);
+        useAudioAdminStore.setState({ audioAnalyser });
+      }
+    });
+};

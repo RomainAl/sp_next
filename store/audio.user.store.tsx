@@ -6,6 +6,9 @@ import { devtools } from "zustand/middleware";
 type audioStoreType = {
   audioContext: AudioContext | null;
   audioAnalyser: AnalyserNode | null;
+  filter: Device | null;
+  gain: GainNode | null;
+  nikedal: Device | null;
   instrus: Device[];
   peerSound: MediaStreamAudioDestinationNode | null;
   audioContextRef: RefObject<AudioContext | null>;
@@ -18,7 +21,10 @@ export const useAudioUserStore = create(
   devtools<audioStoreType>((set) => ({
     audioContext: null,
     audioAnalyser: null,
-    instrus: new Array(1),
+    filter: null,
+    gain: null,
+    nikedal: null,
+    instrus: new Array(2),
     peerSound: null,
     audioContextRef: createRef<AudioContext>(),
     // params: new Array(2),
@@ -64,30 +70,53 @@ export const setUserAudio = async () => {
   const ctx = new AudioContext();
   const ctxRef = createRef<AudioContext | null>();
   ctxRef.current = ctx;
+  const gain = ctx.createGain();
   ctx.resume();
   const instrus = useAudioUserStore.getState().instrus;
-  // const params = useAudioUserStore.getState().params;
+  let filter = null;
   for (let i = 0; i < instrus.length; i++) {
     try {
-      const path = "/instru";
-      const rawPatcher = await fetch(`${path}${i}/patch.export.json`);
-      const patcher = await rawPatcher.json();
-      const dependenciesResponse = await fetch(`${path}${i}/dependencies.json`);
-      let dependencies = await dependenciesResponse.json();
-      dependencies = dependencies.map((d: { id: string; file: string }) => (d.file ? Object.assign({}, d, { file: `${path}${i}/` + d.file }) : d));
-      instrus[i] = await createDevice({ context: ctx, patcher: patcher }); // TOTO : Type of RNBO params : ICreateDeviceParameters
-      if (dependencies.length) await instrus[i].loadDataBufferDependencies(dependencies);
-      // params[i] = instrus[i].parameters; // TODO pourquoi array/array/truc ?!
+      const path = `/instru${i}`;
+      instrus[i] = await loadRNBO(path, ctx);
     } catch (e) {
       console.error(e);
-      console.error("Impossible de charger les effets !");
+      console.error("Impossible de charger les instrus !");
     }
   }
+  try {
+    const path = "/filter";
+    filter = await loadRNBO(path, ctx);
+  } catch (e) {
+    console.error(e);
+    console.error("Impossible de charger filter !");
+  }
+
+  try {
+    const path = "/nikedal";
+    filter = await loadRNBO(path, ctx);
+  } catch (e) {
+    console.error(e);
+    console.error("Impossible de charger nikedal !");
+  }
+
   useAudioUserStore.setState({
     audioContext: ctx,
     audioContextRef: ctxRef,
+    filter: filter,
+    gain: gain,
     audioAnalyser: ctx.createAnalyser(),
     instrus: instrus,
     peerSound: ctx.createMediaStreamDestination(),
   });
+};
+
+const loadRNBO = async (path: string, ctx: AudioContext) => {
+  const rawPatcher = await fetch(`${path}/patch.export.json`);
+  const patcher = await rawPatcher.json();
+  const dependenciesResponse = await fetch(`${path}/dependencies.json`);
+  let dependencies = await dependenciesResponse.json();
+  dependencies = dependencies.map((d: { id: string; file: string }) => (d.file ? Object.assign({}, d, { file: `${path}/` + d.file }) : d));
+  const device = await createDevice({ context: ctx, patcher: patcher });
+  if (dependencies.length) await device.loadDataBufferDependencies(dependencies);
+  return device;
 };
