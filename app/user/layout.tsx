@@ -1,17 +1,17 @@
 "use client";
 import { Call } from "@/components/call";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+// import {
+//   NavigationMenu,
+//   NavigationMenuContent,
+//   NavigationMenuItem,
+//   NavigationMenuLink,
+//   NavigationMenuList,
+//   NavigationMenuTrigger,
+//   navigationMenuTriggerStyle,
+// } from "@/components/ui/navigation-menu";
 import { useMessUserStore } from "@/store/mess.user.store";
 import { useWebrtcUserStore } from "@/store/webrtc.user.store";
-import Link from "next/link";
+// import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Slide, ToastContainer } from "react-toastify";
@@ -22,14 +22,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const goto = useMessUserStore((store) => store.goto);
   const getStream = useMessUserStore(useShallow((store) => store.getStream));
   const router = useRouter();
+
   useEffect(() => {
-    // if (!peer) router.push("/");
+    if (!peer || !peer?.open) router.push("/");
+    return () => peer?.destroy();
+  }, [peer, router]);
+
+  useEffect(() => {
     if (goto) router.push("/user/" + goto);
-  }, [goto, router, peer]);
+  }, [goto, router]);
 
   return (
     <>
-      <NavigationMenu>
+      {/* <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
             <Link href="/" legacyBehavior passHref prefetch={false}>
@@ -67,7 +72,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Link>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenu>
+      </NavigationMenu> */}
       {getStream && getStream.call && <Call />}
       <main>{children}</main>
       <ToastContainer draggable transition={Slide} position="top-center" theme="dark" className="mt-1 w-full gap-2 px-8" />

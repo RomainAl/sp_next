@@ -39,7 +39,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               case 80:
                 const page: string = "hacker";
                 setCurrentPage(page);
-                sendMess({ goto: page });
+                break;
+              case 40:
+                sendMess({ elonMode: message.velocity });
                 break;
             }
             console.log(`[Note On] Note: ${message.note} Velocity: ${message.velocity} Channel: ${message.channel}`);
@@ -75,7 +77,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     onClick={() => {
                       const page: string = "instru?n=0";
                       setCurrentPage(page);
-                      sendMess({ goto: page });
                     }}
                   >
                     INSTRU 0
@@ -88,7 +89,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     onClick={() => {
                       const page: string = "instru?n=1";
                       setCurrentPage(page);
-                      sendMess({ goto: page });
                     }}
                   >
                     INSTRU 1
@@ -101,24 +101,61 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     onClick={() => {
                       const page: string = "instru?n=2";
                       setCurrentPage(page);
-                      sendMess({ goto: page });
                     }}
                   >
                     INSTRU 2
                   </Button>
                 </NavigationMenuLink>
               </Link>
+              <Link href="/admin/instru" legacyBehavior passHref prefetch={false}>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                  <Button
+                    onClick={() => {
+                      const page: string = "instru?n=3";
+                      setCurrentPage(page);
+                    }}
+                  >
+                    INSTRU 3
+                  </Button>
+                </NavigationMenuLink>
+              </Link>
             </NavigationMenuContent>
-            <Link href="/admin/insta" legacyBehavior passHref prefetch={false}>
+            <NavigationMenuTrigger>INSTAS</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <Link href="/admin/insta" legacyBehavior passHref prefetch={false}>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                  <Button
+                    onClick={() => {
+                      const page: string = "insta?n=0";
+                      setCurrentPage(page);
+                    }}
+                  >
+                    INSTA 0
+                  </Button>
+                </NavigationMenuLink>
+              </Link>
+              <Link href="/admin/insta" legacyBehavior passHref prefetch={false}>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                  <Button
+                    onClick={() => {
+                      const page: string = "insta?n=1";
+                      setCurrentPage(page);
+                    }}
+                  >
+                    INSTA 1
+                  </Button>
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuContent>
+            <Link href="/admin/elon" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
                 <Button
                   onClick={() => {
-                    const page: string = "insta?n=0";
+                    const page: string = "elon";
                     setCurrentPage(page);
-                    sendMess({ goto: page });
                   }}
                 >
-                  INSTA
+                  ELON
                 </Button>
               </NavigationMenuLink>
             </Link>
@@ -128,7 +165,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   onClick={() => {
                     const page: string = "facestime";
                     setCurrentPage(page);
-                    sendMess({ goto: page });
                   }}
                 >
                   FACESTIME
@@ -141,7 +177,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   onClick={() => {
                     const page: string = "hacker";
                     setCurrentPage(page);
-                    sendMess({ goto: page });
                   }}
                 >
                   HACKER
@@ -154,7 +189,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   onClick={() => {
                     const page: string = "flashes";
                     setCurrentPage(page);
-                    sendMess({ goto: page });
                   }}
                 >
                   FLASHES
@@ -167,7 +201,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   onClick={() => {
                     const page: string = "larsen";
                     setCurrentPage(page);
-                    sendMess({ goto: page });
                   }}
                 >
                   LARSEN
@@ -180,7 +213,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   onClick={() => {
                     const page: string = "nikedal";
                     setCurrentPage(page);
-                    sendMess({ goto: page });
                   }}
                 >
                   NIKEDAL

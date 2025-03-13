@@ -26,11 +26,13 @@ export default function Home() {
     }
     console.log("TODO : CHECK IF DON'T NEED TO KILL CAROUSSEL API");
     sendMess({ currentInstaVid: api.selectedScrollSnap() });
+    setInstaCurrentVid(startVid);
     api.on("select", () => {
+      console.log(api.selectedScrollSnap());
       sendMess({ currentInstaVid: api.selectedScrollSnap() });
       setInstaCurrentVid(api.selectedScrollSnap());
     });
-  }, [api]);
+  }, [api, startVid]);
 
   useEffect(() => {
     if (ref.current) ref.current.style.height = `${height}px`;
@@ -48,7 +50,7 @@ export default function Home() {
       <Carousel
         setApi={setApi}
         opts={{
-          align: "center",
+          align: "start",
           loop: true,
           dragFree: true,
           startIndex: startVid,
@@ -110,6 +112,7 @@ const InstaVideo = ({ index }: { index: number }) => {
   const soundRef = useRef<MediaElementAudioSourceNode>(null);
   const searchParams = useSearchParams();
   const instaNb: number = searchParams.has("n") ? Number(searchParams.get("n")) : 0;
+
   useEffect(() => {
     if (ref.current) ref.current.width = width;
   }, [width]);
@@ -123,6 +126,7 @@ const InstaVideo = ({ index }: { index: number }) => {
     if (ref.current) {
       if (currentVid === index) {
         ref.current.play();
+
         if (audioContext && peerSound) {
           if (!soundRef.current) soundRef.current = audioContext.createMediaElementSource(ref.current);
           soundRef.current.connect(peerSound);
@@ -134,7 +138,10 @@ const InstaVideo = ({ index }: { index: number }) => {
         soundRef.current?.disconnect();
       }
       if (currentVid === index - 1) {
-        ref.current.preload = "auto";
+        // ref.current.preload = "auto";
+        ref.current.play().then(() => {
+          if (ref.current) ref.current.pause();
+        });
       }
     }
 
@@ -146,7 +153,16 @@ const InstaVideo = ({ index }: { index: number }) => {
   return (
     <div className="flex size-full items-center justify-center">
       {pending && <Spinner size="xlarge"></Spinner>}
-      <video className={cn("block", { hidden: pending })} ref={ref} playsInline loop preload="none">
+      <video
+        onClick={() => {
+          ref.current?.play();
+        }}
+        className={cn("block", { hidden: pending })}
+        ref={ref}
+        playsInline
+        loop
+        preload="none"
+      >
         <source src={`/insta${instaNb}/video${index}.mp4`} type="video/mp4" />
         Your browser does not support the video tag.
       </video>

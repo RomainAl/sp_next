@@ -33,26 +33,24 @@ export default function Home() {
 
   useEffect(() => {
     if (audioContext && analyser && gain && nikedal) {
+      console.log("LOG NIKEDAL");
       analyser.disconnect();
       gain.disconnect();
-      nikedal.node.connect(gain).connect(analyser).connect(audioContext.destination);
-      if (refAudio.current) {
-        refAudio.current.muted = false;
-        const source = audioContext.createMediaElementSource(refAudio.current);
-        source.connect(gain);
-        audioContext.resume();
-      }
+      nikedal.node.connect(analyser).connect(audioContext.destination);
+      audioContext.resume();
     }
     return () => {
+      console.log("KILL NIKEDAL");
       analyser?.disconnect();
+      gain?.disconnect();
       audioContext?.suspend();
+      nikedal?.node.disconnect();
     };
   }, [audioContext, analyser, gain, nikedal]);
 
   return (
     <>
       <div className="flex h-screen w-screen flex-col items-center justify-center gap-7">
-        {/* <audio className="hidden" src="/nikedal.mp3" ref={refAudio} autoPlay={true} controls={false} loop muted></audio> */}
         <SoundwaveCanvas
           onClick={() => {
             refAudio?.current?.play();

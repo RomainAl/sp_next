@@ -96,6 +96,9 @@ export const createPeer = () => {
       path: "/socket",
       debug: 2,
       key: "smartphonics",
+      config: {
+        iceServers: [{ urls: "stun:stun.services.mozilla.com" }, { urls: "stun:stun.l.google.com:19302" }],
+      },
     });
   }
 

@@ -24,7 +24,7 @@ export const useAudioUserStore = create(
     filter: null,
     gain: null,
     nikedal: null,
-    instrus: new Array(2),
+    instrus: new Array(4),
     peerSound: null,
     audioContextRef: createRef<AudioContext>(),
     // params: new Array(2),
@@ -74,6 +74,7 @@ export const setUserAudio = async () => {
   ctx.resume();
   const instrus = useAudioUserStore.getState().instrus;
   let filter = null;
+  let nikedal = null;
   for (let i = 0; i < instrus.length; i++) {
     try {
       const path = `/instru${i}`;
@@ -93,7 +94,7 @@ export const setUserAudio = async () => {
 
   try {
     const path = "/nikedal";
-    filter = await loadRNBO(path, ctx);
+    nikedal = await loadRNBO(path, ctx);
   } catch (e) {
     console.error(e);
     console.error("Impossible de charger nikedal !");
@@ -103,6 +104,7 @@ export const setUserAudio = async () => {
     audioContext: ctx,
     audioContextRef: ctxRef,
     filter: filter,
+    nikedal: nikedal,
     gain: gain,
     audioAnalyser: ctx.createAnalyser(),
     instrus: instrus,

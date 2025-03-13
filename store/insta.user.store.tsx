@@ -8,7 +8,7 @@ type instaUserStoreType = {
   vidMeta: { name: string; description: string; compte: string; hashtag: string }[];
 };
 
-const startVid = Math.floor(Math.random() * 50);
+const startVid = 0; //Math.floor(Math.random() * 50);
 
 export const initInstaUserStore = {
   currentVid: startVid,
@@ -25,6 +25,10 @@ export const setInstaCurrentVid = (currentVid: number) => {
 
 export const setInstaVidMeta = () => {
   useInstaUserStore.setState({ vidMeta: genererVideosAnimalieres() });
+};
+
+export const setInstaVidNb = (vidNb: instaUserStoreType) => {
+  useInstaUserStore.setState(vidNb);
 };
 
 function genererVideosAnimalieres() {

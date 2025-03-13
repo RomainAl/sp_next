@@ -60,7 +60,7 @@ export default function Home() {
                   >
                     <UserAvatar2 color="ffffff" name={user.id} size={362} />
                     <div className="absolute top-0 flex size-full items-center justify-center">
-                      <p className="rounded-lg border border-primary bg-accent px-5 py-2 text-primary"> {user.name}</p>
+                      <p className="w-1/2 rounded-lg border border-primary bg-accent py-1 text-primary"> {user.name}</p>
                     </div>
                   </div>
                 ))}

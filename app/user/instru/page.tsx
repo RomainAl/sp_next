@@ -28,6 +28,7 @@ export default function Home() {
     if (!audioContext || !instru || !analyser) {
       return;
     }
+    console.log("LOG INSTRU");
     analyser.disconnect();
     instru.node.connect(analyser);
     analyser.connect(audioContext.destination);
@@ -35,23 +36,41 @@ export default function Home() {
     if (instru.outports.length < 1) {
       return;
     } else {
+      instru.messageEvent.subscribe((ev) => {
+        // Ignore message events that don't belong to an outport
+        if (instru.outports.findIndex((elt) => elt.tag === ev.tag) < 0) return;
+        // Message events have a tag as well as a payload
+        if (refOutports.current) {
+          refOutports.current.innerHTML = `<strong>${ev.tag}</strong> : ${ev.payload}`;
+        }
+      });
     }
-    instru.messageEvent.subscribe((ev) => {
-      // Ignore message events that don't belong to an outport
-      if (instru.outports.findIndex((elt) => elt.tag === ev.tag) < 0) return;
-      // Message events have a tag as well as a payload
-      if (refOutports.current) {
-        refOutports.current.innerHTML = `<strong>${ev.tag}</strong> : ${ev.payload}`;
-      }
-    });
+    return () => {
+      console.log("TODO : NORMALEMENT KILL HERE");
+      //   console.log("KILL INSTRU");
+      //   analyser?.disconnect();
+      //   instru?.node.disconnect();
+      //   audioContext?.suspend();
+      //   instru.messageEvent.removeAllSubscriptions();
+      //   console.log(instru.node);
+    };
+  }, [audioContext, instru, analyser]);
 
+  useEffect(() => {
+    console.log("IN INSTRU");
     return () => {
       analyser?.disconnect();
       instru?.node.disconnect();
       audioContext?.suspend();
-      instru.messageEvent.removeAllSubscriptions();
+      try {
+        instru?.messageEvent?.removeAllSubscriptions();
+      } catch (e) {
+        console.log(e);
+      }
+      console.log(instru.messageEvent);
+      console.log("TODO : OUT INSTRU (ETRANGE POURQUOI MARCHE PAS AVANT ?!)");
     };
-  }, [audioContext, instru, analyser]);
+  }, []);
 
   return (
     <>

@@ -8,6 +8,7 @@ export type admin2userDataType = {
   flashes_trig?: number;
   flashes_time?: number;
   gain?: number;
+  elonMode?: number;
 };
 
 export type user2adminDataType = {

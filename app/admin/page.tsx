@@ -6,13 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { setAdminAudio, setAudioAnalyser } from "@/store/audio.admin.store";
 import { useMessAdminStore } from "@/store/mess.admin.store";
-import { createPeer, useWebrtcAdminStore } from "@/store/webrtc.admin.store";
+import { createPeer } from "@/store/webrtc.admin.store";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
 
 export default function Home() {
-  const peer = useWebrtcAdminStore((store) => store.peer);
   const goto = useMessAdminStore((store) => store.goto);
   const router = useRouter();
 
@@ -20,7 +19,7 @@ export default function Home() {
     try {
       const password: string = formData.get("password") as string;
       if (password !== "") return "error";
-      if (!peer) createPeer();
+      createPeer();
       setAdminAudio();
       setAudioAnalyser();
       router.push(`/admin/${goto}`);

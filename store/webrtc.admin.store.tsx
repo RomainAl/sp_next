@@ -40,13 +40,16 @@ export const createPeer = () => {
   // if (!util.supports.data) throw new Error("E_01");
   // if (!util.supports.audioVideo) throw new Error("E_02");
   let peer = useWebrtcAdminStore.getState().peer;
-  if (!peer) {
+  if (!peer || !peer.open) {
     peer = new Peer("admin", {
       host: "192.168.10.2",
       port: 443,
       path: "/socket",
       debug: 2,
       key: "smartphonics",
+      config: {
+        iceServers: [{ urls: "stun:stun.services.mozilla.com" }, { urls: "stun:stun.l.google.com:19302" }],
+      },
     });
   }
 

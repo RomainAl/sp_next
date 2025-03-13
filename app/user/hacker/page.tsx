@@ -10,9 +10,8 @@ export default function Home() {
     const doScroll = setInterval(() => {
       if (refDiv.current) {
         refDiv.current.scrollTop += 10;
-        if (refDiv.current.scrollTop >= refDiv.current.scrollHeight - refDiv.current.clientHeight) {
+        if (refDiv.current.scrollTop >= refDiv.current.scrollHeight - refDiv.current.clientHeight - 20) {
           // clearInterval(doScroll);
-          console.log("reset");
           refDiv.current.scrollTop = 0;
         }
       }
