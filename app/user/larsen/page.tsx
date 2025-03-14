@@ -31,7 +31,7 @@ export default function Home() {
     if (!audioContext || !analyser || !filter) {
       return;
     }
-    if (!stream) startTransition(() => peerMediaCall({ constraintsNb: 2 }));
+    if (!stream) startTransition(() => peerMediaCall({ constraintsNb: 3 }));
     analyser.disconnect();
     if (stream) {
       analyser.connect(audioContext.destination);
