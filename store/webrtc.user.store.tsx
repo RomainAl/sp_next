@@ -106,7 +106,8 @@ export const createPeer = () => {
     console.log(id + " - my peer is open");
     peerDataConn();
   });
-  useWebrtcUserStore.setState({ peer });
+
+  useWebrtcUserStore.setState({ peer: peer, peerData: null, peerMedia: null, stream: null });
 };
 
 export const peerDataConn = () => {

@@ -57,11 +57,9 @@ export const AudioMeter = ({
     draw();
   };
 
-  if (ref.current && analyser) soundVisualizer(ref.current, analyser); // TODO : CHECK IF BUG ?
-
   useEffect(() => {
     if (!analyser) return;
-
+    if (ref.current && analyser) soundVisualizer(ref.current, analyser); // TODO : CHECK IF BUG ?
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
       analyser?.disconnect();
@@ -69,7 +67,7 @@ export const AudioMeter = ({
       splitter?.disconnect();
       source?.disconnect();
     };
-  }, [analyser, splitter, source, analyser_admin]);
+  }, [analyser]);
 
   return (
     <div className="size-full" ref={ref}>

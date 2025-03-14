@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { initInstaUserStore } from "./insta.user.store";
+import { vidNb } from "./insta.user.store";
 
 type instaAdminStoreType = {
   id: number;
@@ -9,7 +9,7 @@ type instaAdminStoreType = {
 
 export const useInstaAdminStore = create(
   devtools<{ videoViews: instaAdminStoreType[] }>(() => ({
-    videoViews: new Array(initInstaUserStore.vidNb).fill({ id: 0, views: 0 }),
+    videoViews: new Array(vidNb).fill({ id: 0, views: 0 }),
   }))
 );
 

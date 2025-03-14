@@ -3,17 +3,14 @@ import { devtools } from "zustand/middleware";
 
 type instaUserStoreType = {
   currentVid: number;
-  startVid: number;
-  vidNb: number;
   vidMeta: { name: string; description: string; compte: string; hashtag: string }[];
 };
 
-const startVid = 0; //Math.floor(Math.random() * 50);
+export const vidNb = 10;
+export const startVid = Math.floor(Math.random() * vidNb);
 
 export const initInstaUserStore = {
   currentVid: startVid,
-  startVid: startVid,
-  vidNb: 50,
   vidMeta: [],
 };
 
@@ -25,10 +22,6 @@ export const setInstaCurrentVid = (currentVid: number) => {
 
 export const setInstaVidMeta = () => {
   useInstaUserStore.setState({ vidMeta: genererVideosAnimalieres() });
-};
-
-export const setInstaVidNb = (vidNb: instaUserStoreType) => {
-  useInstaUserStore.setState(vidNb);
 };
 
 function genererVideosAnimalieres() {
@@ -258,9 +251,9 @@ function genererVideosAnimalieres() {
     "#YeuxBrillantsEtAdorables #ÂmeInnocenteEtPure",
   ];
 
-  const videosMeta = new Array(initInstaUserStore.vidNb);
+  const videosMeta = new Array(vidNb);
 
-  for (let i = 0; i < initInstaUserStore.vidNb; i++) {
+  for (let i = 0; i < vidNb; i++) {
     const vidMeta = {
       name: nomsAnimaux[i % nomsAnimaux.length],
       description: descriptions[i % descriptions.length],

@@ -8,7 +8,7 @@ const initAdmin2UserData: admin2userDataType = {
   flashes_time: 1000,
   flashes_trig: 0,
   gain: 1,
-  elonMode: -1,
+  elonMode: 0,
 };
 
 export const useMessUserStore = create(

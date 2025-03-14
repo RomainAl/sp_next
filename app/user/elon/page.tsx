@@ -17,18 +17,17 @@ export default function Home() {
   const ref = useRef<HTMLDivElement>(null);
   const [api, setApi] = useState<CarouselApi>();
   const plugin = useRef(Autoplay({ delay: 1712, stopOnInteraction: false, stopOnFocusIn: false }));
-  const startVid = useInstaUserStore((store) => store.startVid);
 
   useEffect(() => {
     if (!api) {
       return;
     }
     console.log("TODO : CHECK IF DON'T NEED TO KILL CAROUSSEL API");
-    setInstaCurrentVid(startVid);
+    setInstaCurrentVid(0);
     api.on("select", () => {
       setInstaCurrentVid(api.selectedScrollSnap());
     });
-  }, [api, startVid]);
+  }, [api]);
 
   useEffect(() => {
     if (ref.current) ref.current.style.height = `${height}px`;
@@ -43,7 +42,7 @@ export default function Home() {
           align: "center",
           loop: true,
           dragFree: false,
-          startIndex: startVid,
+          startIndex: 0,
         }}
         orientation="vertical"
         className="size-full"

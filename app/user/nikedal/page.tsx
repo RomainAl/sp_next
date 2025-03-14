@@ -17,7 +17,14 @@ export default function Home() {
   const gain_value = useMessUserStore((store) => store.gain);
 
   useEffect(() => {
-    if (gain && gain_value) gain.gain.value = gain_value;
+    if (gain && gain_value) {
+      gain.gain.value = gain_value;
+      console.log(gain_value);
+      if (gain_value <= 0.1) {
+        console.log("stop");
+        audioContext?.suspend();
+      }
+    }
   }, [gain_value, gain, audioContext]);
 
   setSoundVisualizerParams({
@@ -36,7 +43,7 @@ export default function Home() {
       console.log("LOG NIKEDAL");
       analyser.disconnect();
       gain.disconnect();
-      nikedal.node.connect(analyser).connect(audioContext.destination);
+      nikedal.node.connect(gain).connect(analyser).connect(audioContext.destination);
       audioContext.resume();
     }
     return () => {

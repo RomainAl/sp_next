@@ -24,7 +24,7 @@ export const useAudioUserStore = create(
     filter: null,
     gain: null,
     nikedal: null,
-    instrus: new Array(4),
+    instrus: new Array(3),
     peerSound: null,
     audioContextRef: createRef<AudioContext>(),
     // params: new Array(2),

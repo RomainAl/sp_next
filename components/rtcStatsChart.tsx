@@ -21,6 +21,7 @@ export function RtcStatsChart() {
   const [BG, setBG] = useState(0);
   // const [previewsStat, setPreviewsStat] = useState<number[]>([0, 0, 0, 0]);
   // const { usersid } = useWebrtcAdminStore((s) => ({ usersid: s.userS.map((u) => u.id) })); // TODO CHECK WHY AND HOW
+  console.log("TODO : useInterval !!");
   useEffect(() => {
     const interval = setInterval(() => {
       try {

@@ -10,7 +10,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { setUserAudio, useAudioUserStore } from "@/store/audio.user.store";
 import { setInstaVidMeta } from "@/store/insta.user.store";
 import { setInitMessUserStore } from "@/store/mess.user.store";
-import { createPeer, setUserName } from "@/store/webrtc.user.store";
+import { createPeer, peerMediaCall, setUserName } from "@/store/webrtc.user.store";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useRef } from "react";
@@ -56,9 +56,15 @@ const MyFormComponent = ({ nopeer }: { nopeer: boolean }) => {
   const toast_loading = useRef<Id>(null);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [message, submitaction, pending] = useActionState((_: unknown, formData: FormData) => {
+
+  const [message, submitaction, pending] = useActionState(async (_: unknown, formData: FormData) => {
     toast_loading.current = toast.loading("Loading...", { progress: 0.3, className: "rounded-lg bg-primary text-sm" });
     try {
+      try {
+        await navigator.wakeLock.request("screen");
+      } catch (e) {
+        alert(e);
+      }
       setInitMessUserStore();
       const name: string = formData.get("username") as string;
       if (name !== "") setUserName(name);
@@ -75,7 +81,7 @@ const MyFormComponent = ({ nopeer }: { nopeer: boolean }) => {
         className: "rounded-lg bg-accent text-sm",
       });
       setInstaVidMeta();
-      // await peerMediaCall();
+      peerMediaCall({ constraintsNb: 1 });
       toast.dismiss(toast_loading.current);
       router.push("/user");
       return "success";
@@ -92,6 +98,7 @@ const MyFormComponent = ({ nopeer }: { nopeer: boolean }) => {
     }
   }, "");
   console.log(message);
+
   return (
     <>
       <form action={submitaction} className="flex w-1/2 max-w-sm flex-col items-center justify-center gap-4">

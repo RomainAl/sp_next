@@ -69,6 +69,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link href="/admin" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>ADMIN</NavigationMenuLink>
             </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <NavigationMenuTrigger>INSTRUS</NavigationMenuTrigger>
             <NavigationMenuContent>
               <Link href="/admin/instru" legacyBehavior passHref prefetch={false}>
@@ -107,19 +109,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </Button>
                 </NavigationMenuLink>
               </Link>
-              <Link href="/admin/instru" legacyBehavior passHref prefetch={false}>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
-                  <Button
-                    onClick={() => {
-                      const page: string = "instru?n=3";
-                      setCurrentPage(page);
-                    }}
-                  >
-                    INSTRU 3
-                  </Button>
-                </NavigationMenuLink>
-              </Link>
             </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <NavigationMenuTrigger>INSTAS</NavigationMenuTrigger>
             <NavigationMenuContent>
               <Link href="/admin/insta" legacyBehavior passHref prefetch={false}>
@@ -147,6 +139,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <Link href="/admin/elon" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
                 <Button
@@ -159,6 +153,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Button>
               </NavigationMenuLink>
             </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <Link href="/admin/facestime" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
                 <Button
@@ -171,6 +167,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Button>
               </NavigationMenuLink>
             </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <Link href="/admin/hacker" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
                 <Button
@@ -183,6 +181,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Button>
               </NavigationMenuLink>
             </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <Link href="/admin/flashes" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
                 <Button
@@ -195,6 +195,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Button>
               </NavigationMenuLink>
             </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <Link href="/admin/larsen" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
                 <Button
@@ -207,6 +209,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Button>
               </NavigationMenuLink>
             </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <Link href="/admin/nikedal" legacyBehavior passHref prefetch={false}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
                 <Button

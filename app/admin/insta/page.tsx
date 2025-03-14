@@ -23,7 +23,7 @@ export default function Home() {
             <ResizablePanel defaultSize={50} className="flex flex-col items-center justify-center gap-2">
               <p>Audio from people : </p>
               <Separator className="w-1/2 bg-accent" />
-              <div className="flex size-full flex-row flex-wrap items-start justify-start gap-0">
+              <div className="flex size-full flex-row flex-wrap items-center justify-center gap-0">
                 {userS.map((user, i) => (
                   <div
                     key={user.id}
@@ -48,7 +48,7 @@ export default function Home() {
             <ResizablePanel defaultSize={50} className="flex flex-col items-center justify-center gap-2">
               <p>Connected people : </p>
               <Separator className="w-1/2 bg-accent" />
-              <div className="flex size-full flex-row flex-wrap items-start justify-start gap-0">
+              <div className="flex size-full flex-row flex-wrap items-center justify-center gap-0">
                 {userS.map((user) => (
                   <div
                     key={user.id}
