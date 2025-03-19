@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { setCurrentPage } from "@/store/mess.admin.store";
 import { useToastStore } from "@/store/shared.store";
-import { sendMess } from "@/store/webrtc.admin.store";
+import { sendMess, useWebrtcAdminStore } from "@/store/webrtc.admin.store";
 import { MIDIVal, MIDIValInput } from "@midival/core";
 import Link from "next/link";
 import { Slide, toast, ToastContainer } from "react-toastify";
@@ -227,6 +227,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </NavigationMenuList>
       </NavigationMenu>
       <Button onClick={() => connectMidi()}>MIDI</Button>
+      <Button onClick={() => console.log(useWebrtcAdminStore.getState().userS)}>USERS</Button>
       <main>{children}</main>
       <ToastContainer draggable transition={Slide} position="top-center" theme="dark" className="mt-1 gap-1" />
     </>

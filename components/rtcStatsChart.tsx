@@ -6,7 +6,8 @@ import { setBitrates, useWebrtcAdminStore, webrtcBiterateType } from "@/store/we
 import { Bar, BarChart, YAxis } from "recharts";
 
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useInterval } from "usehooks-ts";
 
 const chartConfig = {
   desktop: {
@@ -19,35 +20,28 @@ export function RtcStatsChart() {
   const userS = useWebrtcAdminStore((store) => store.userS);
   const bitrates = useWebrtcAdminStore((store) => store.bitrates);
   const [BG, setBG] = useState(0);
-  // const [previewsStat, setPreviewsStat] = useState<number[]>([0, 0, 0, 0]);
-  // const { usersid } = useWebrtcAdminStore((s) => ({ usersid: s.userS.map((u) => u.id) })); // TODO CHECK WHY AND HOW
-  console.log("TODO : useInterval !!");
-  useEffect(() => {
-    const interval = setInterval(() => {
-      try {
-        if (bitrates.length > 0) {
-          setBG(0);
-          bitrates.forEach((b) => {
-            userS
-              .find((u) => u.id === b.id)
-              ?.peerMedia?.peerConnection.getStats(null)
-              .then((res) => {
-                const statsU = dumpStats(res, b);
-                setBG((BG) => BG + statsU.bitrate);
-                setBitrates(statsU);
-                // for (let i = 0; i < BitrateG.length; i++) {
-                //   BitrateG += statsU.bitrate;
-                // }
-              });
-          });
-        }
-      } catch (err) {
-        console.log(err);
+  useInterval(() => {
+    try {
+      if (bitrates.length > 0) {
+        setBG(0);
+        bitrates.forEach((b) => {
+          userS
+            .find((u) => u.id === b.id)
+            ?.peerMedia?.peerConnection.getStats(null)
+            .then((res) => {
+              const statsU = dumpStats(res, b);
+              setBG((BG) => BG + statsU.bitrate);
+              setBitrates(statsU);
+              // for (let i = 0; i < BitrateG.length; i++) {
+              //   BitrateG += statsU.bitrate;
+              // }
+            });
+        });
       }
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, [userS, bitrates]);
+    } catch (err) {
+      console.log(err);
+    }
+  }, 5000);
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-2">

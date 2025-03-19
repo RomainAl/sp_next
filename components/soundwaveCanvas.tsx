@@ -12,6 +12,7 @@ export const SoundwaveCanvas = ({ analyser, ...props }: SoundwaveCanvasProps) =>
     if (!ctx) return;
     const isVertical = canvas.height / canvas.width > 1;
     const wOrh = isVertical ? "width" : "height";
+    console.log("TODO : useHook dans fonction c'est pas trop");
     analyser.fftSize = useSoundVisualizerParamsStore.getState().fftSize;
     const times = new Uint8Array(analyser.frequencyBinCount);
     const rectSize = useSoundVisualizerParamsStore.getState().rectSize;
@@ -21,6 +22,7 @@ export const SoundwaveCanvas = ({ analyser, ...props }: SoundwaveCanvasProps) =>
     const stroke = useSoundVisualizerParamsStore.getState().stroke;
     const rand = useSoundVisualizerParamsStore.getState().rand;
     let meanVal = 0;
+
     const draw = () => {
       if (Math.random() * rand < 0.1) ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -67,9 +69,7 @@ export const SoundwaveCanvas = ({ analyser, ...props }: SoundwaveCanvasProps) =>
   };
 
   useEffect(() => {
-    if (!analyser) {
-      return;
-    }
+    if (!analyser) return;
     if (canvasRef.current) soundVisualizer(canvasRef.current, analyser);
     return () => {
       if (requestRef.current) {

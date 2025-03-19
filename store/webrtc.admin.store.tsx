@@ -42,7 +42,7 @@ export const createPeer = () => {
   let peer = useWebrtcAdminStore.getState().peer;
   if (!peer || !peer.open) {
     peer = new Peer("admin", {
-      host: "192.168.10.2",
+      host: "sp2.attablee.art",
       port: 443,
       path: "/socket",
       debug: 2,

@@ -10,7 +10,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { setUserAudio, useAudioUserStore } from "@/store/audio.user.store";
 import { setInstaVidMeta } from "@/store/insta.user.store";
 import { setInitMessUserStore } from "@/store/mess.user.store";
-import { createPeer, peerMediaCall, setUserName } from "@/store/webrtc.user.store";
+import { createPeer, setUserName } from "@/store/webrtc.user.store";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useRef } from "react";
@@ -81,7 +81,7 @@ const MyFormComponent = ({ nopeer }: { nopeer: boolean }) => {
         className: "rounded-lg bg-accent text-sm",
       });
       setInstaVidMeta();
-      peerMediaCall({ constraintsNb: 1 });
+      // peerMediaCall({ constraintsNb: 1 });
       toast.dismiss(toast_loading.current);
       router.push("/user");
       return "success";

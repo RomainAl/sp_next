@@ -91,7 +91,7 @@ export const createPeer = () => {
   let peer = useWebrtcUserStore.getState().peer;
   if (!peer) {
     peer = new Peer(useWebrtcUserStore.getState().id, {
-      host: "192.168.10.2",
+      host: "sp2.attablee.art",
       port: 443,
       path: "/socket",
       debug: 2,
@@ -147,6 +147,7 @@ export const peerDataConn = () => {
             console.log(e);
           }
         });
+
         useWebrtcUserStore.setState({ peerData });
       });
     }

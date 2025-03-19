@@ -6,7 +6,7 @@ import { useAudioUserStore } from "@/store/audio.user.store";
 import { initSoundVisualizerParams, setSoundVisualizerParams } from "@/store/shared.store";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { useWindowSize } from "usehooks-ts";
+import { useUnmount, useWindowSize } from "usehooks-ts";
 
 export default function Home() {
   const searchParams = useSearchParams();
@@ -56,21 +56,34 @@ export default function Home() {
     };
   }, [audioContext, instru, analyser]);
 
-  useEffect(() => {
-    console.log("IN INSTRU");
-    return () => {
-      analyser?.disconnect();
-      instru?.node.disconnect();
-      audioContext?.suspend();
-      try {
-        instru?.messageEvent?.removeAllSubscriptions();
-      } catch (e) {
-        console.log(e);
-      }
-      console.log(instru.messageEvent);
-      console.log("TODO : OUT INSTRU (ETRANGE POURQUOI MARCHE PAS AVANT ?!)");
-    };
-  }, []);
+  useUnmount(() => {
+    analyser?.disconnect();
+    instru?.node.disconnect();
+    audioContext?.suspend();
+    try {
+      instru?.messageEvent?.removeAllSubscriptions();
+    } catch (e) {
+      console.log(e);
+    }
+    console.log(instru.messageEvent);
+    console.log("TODO : OUT INSTRU (ETRANGE POURQUOI MARCHE PAS AVANT ?!)");
+  });
+
+  // useEffect(() => {
+  //   console.log("IN INSTRU");
+  //   return () => {
+  //     analyser?.disconnect();
+  //     instru?.node.disconnect();
+  //     audioContext?.suspend();
+  //     try {
+  //       instru?.messageEvent?.removeAllSubscriptions();
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //     console.log(instru.messageEvent);
+  //     console.log("TODO : OUT INSTRU (ETRANGE POURQUOI MARCHE PAS AVANT ?!)");
+  //   };
+  // }, []);
 
   return (
     <>

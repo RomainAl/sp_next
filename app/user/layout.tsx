@@ -16,7 +16,7 @@ import { useEffect } from "react";
 import { Slide, ToastContainer } from "react-toastify";
 import { useShallow } from "zustand/react/shallow";
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const peer = useWebrtcUserStore((store) => store.peer);
+  // const peer = useWebrtcUserStore((store) => store.peer);
   const peerData = useWebrtcUserStore((store) => store.peerData);
   const peerMedia = useWebrtcUserStore((store) => store.peerMedia);
   const goto = useMessUserStore((store) => store.goto);
@@ -45,10 +45,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
                 <Button
                   onClick={() => {
-                    peer?.destroy();
+                    // peer?.destroy();
                     peerData?.close();
                     peerMedia?.close();
-                    router.push("/");
+                    // router.push("/");
                   }}
                 >
                   HOME
