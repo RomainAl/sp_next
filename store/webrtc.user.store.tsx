@@ -5,7 +5,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { useAudioUserStore } from "./audio.user.store";
 import { useMessUserStore } from "./mess.user.store";
-import { admin2userDataType, user2adminDataType } from "./shared.store";
+import { admin2userDataType, peerOptionsStore, user2adminDataType } from "./shared.store";
 
 type webrtcUserStoreType = {
   username: string;
@@ -18,9 +18,8 @@ type webrtcUserStoreType = {
   mediaConstraints: MediaStreamConstraints[];
 };
 
-// WEBRTC :
-const nanoid = customAlphabet("1234567890abcdef", 10);
-const randomId = "ID" + nanoid(6) + String(Date.now());
+const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 6);
+const randomId = "ID_" + nanoid() + "_" + String(Date.now());
 const adminId = "admin";
 
 export const useWebrtcUserStore = create(
@@ -89,31 +88,27 @@ export const createPeer = () => {
   // if (!util.supports.audioVideo) throw new Error("E_02");
 
   let peer = useWebrtcUserStore.getState().peer;
-  if (!peer) {
-    peer = new Peer(useWebrtcUserStore.getState().id, {
-      host: "sp2.attablee.art",
-      port: 443,
-      path: "/socket",
-      debug: 2,
-      key: "smartphonics",
-      config: {
-        iceServers: [{ urls: "stun:stun.services.mozilla.com" }, { urls: "stun:stun.l.google.com:19302" }],
-      },
+  if (!peer || !peer.open) {
+    peer = new Peer(useWebrtcUserStore.getState().id, peerOptionsStore);
+
+    peer.on("open", (id) => {
+      console.log(id + " - my peer is open");
+      peerDataConn();
     });
-  }
-
-  peer.on("open", (id) => {
-    console.log(id + " - my peer is open");
+    useWebrtcUserStore.setState({ peer: peer, peerData: null, peerMedia: null, stream: null });
+  } else {
     peerDataConn();
-  });
-
-  useWebrtcUserStore.setState({ peer: peer, peerData: null, peerMedia: null, stream: null });
+  }
 };
 
 export const peerDataConn = () => {
   const peer = useWebrtcUserStore.getState().peer;
   if (!peer) createPeer();
   if (peer && peer.open) {
+    peer.on("error", (mess) => {
+      console.log("ttata"); // TODO
+      console.log(mess);
+    });
     const peerData_ = useWebrtcUserStore.getState().peerData;
     if (!peerData_ || !peerData_.open) {
       const peerData = peer.connect(adminId);
@@ -134,6 +129,7 @@ export const peerDataConn = () => {
           try {
             peerDataConn();
           } catch (e) {
+            console.log("toto");
             console.log(e);
           }
         });
@@ -144,6 +140,7 @@ export const peerDataConn = () => {
           try {
             peerDataConn();
           } catch (e) {
+            console.log("toto");
             console.log(e);
           }
         });

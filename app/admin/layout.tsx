@@ -226,8 +226,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-      <Button onClick={() => connectMidi()}>MIDI</Button>
-      <Button onClick={() => console.log(useWebrtcAdminStore.getState().userS)}>USERS</Button>
+      <div className="flex flex-row gap-3">
+        <Button onClick={connectMidi}>MIDI</Button>
+        <Button onClick={() => console.log(useWebrtcAdminStore.getState().userS)}>TEST</Button>
+        <Button
+          onClick={() => {
+            // console.log(useWebrtcAdminStore.getState().userS[0].peerData);
+            console.log(useWebrtcAdminStore.getState().peer);
+            useWebrtcAdminStore.getState().userS[0].peerData?.send("test");
+          }}
+        >
+          USERS
+        </Button>
+      </div>
       <main>{children}</main>
       <ToastContainer draggable transition={Slide} position="top-center" theme="dark" className="mt-1 gap-1" />
     </>

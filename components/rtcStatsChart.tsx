@@ -20,6 +20,7 @@ export function RtcStatsChart() {
   const userS = useWebrtcAdminStore((store) => store.userS);
   const bitrates = useWebrtcAdminStore((store) => store.bitrates);
   const [BG, setBG] = useState(0);
+
   useInterval(() => {
     try {
       if (bitrates.length > 0) {
@@ -53,7 +54,7 @@ export function RtcStatsChart() {
           <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
             <BarChart data={bitrates}>
               <YAxis tickLine={false} axisLine={false} domain={[0, 50]} />
-              <Bar dataKey="bitrate" fill="var(--color-desktop)" radius={4} />
+              <Bar animationDuration={2000} dataKey="bitrate" fill="var(--color-desktop)" radius={4} />
             </BarChart>
           </ChartContainer>
         </CardContent>

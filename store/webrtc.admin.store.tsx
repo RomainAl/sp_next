@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { setInstaCurrentVid } from "./insta.admin.store";
 import { useMessAdminStore } from "./mess.admin.store";
-import { admin2userDataType, user2adminDataType, useToastStore } from "./shared.store";
+import { admin2userDataType, peerOptionsStore, user2adminDataType, useToastStore } from "./shared.store";
 
 type userType = {
   id: string;
@@ -41,16 +41,7 @@ export const createPeer = () => {
   // if (!util.supports.audioVideo) throw new Error("E_02");
   let peer = useWebrtcAdminStore.getState().peer;
   if (!peer || !peer.open) {
-    peer = new Peer("admin", {
-      host: "sp2.attablee.art",
-      port: 443,
-      path: "/socket",
-      debug: 2,
-      key: "smartphonics",
-      config: {
-        iceServers: [{ urls: "stun:stun.services.mozilla.com" }, { urls: "stun:stun.l.google.com:19302" }],
-      },
-    });
+    peer = new Peer("admin", peerOptionsStore);
   }
 
   // PEER DATA :
@@ -96,6 +87,15 @@ export const createPeer = () => {
             userS: state.userS.filter((p) => p.id !== peerData.peer),
             bitrate: state.bitrates.filter((p) => p.id !== peerData.peer),
           }));
+        });
+
+        peerData.on("iceStateChanged", (state) => {
+          console.log(peerData.peer + " - peerData is iceStateChanged to ", state);
+          if (state === "disconnected")
+            useWebrtcAdminStore.setState((state) => ({
+              userS: state.userS.filter((p) => p.id !== peerData.peer),
+              bitrate: state.bitrates.filter((p) => p.id !== peerData.peer),
+            }));
         });
 
         peerData.on("error", (e) => {

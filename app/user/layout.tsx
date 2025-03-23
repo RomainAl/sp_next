@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   //   if (!peer || !peer?.open) router.push("/");
   //   return () => peer?.destroy();
   // }, [peer, router]);
-
+  console.log("RENDER USER LAYOUT !");
   useEffect(() => {
     if (goto) router.push("/user/" + goto);
   }, [goto, router]);

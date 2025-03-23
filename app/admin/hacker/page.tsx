@@ -4,27 +4,28 @@ import { useHackStore } from "@/store/hack.user.store";
 import { useEffect, useRef } from "react";
 
 export default function Home() {
-  const hack = useHackStore((store) => store.hack);
+  const hack2 = useHackStore((store) => store.hack2);
   const refDiv = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    if (refDiv.current) refDiv.current.innerHTML = hack2;
     const doScroll = setInterval(() => {
       if (refDiv.current) {
-        refDiv.current.scrollTop += 20;
-        if (refDiv.current.scrollTop >= refDiv.current.scrollHeight - refDiv.current.clientHeight - 20) {
-          // clearInterval(doScroll);
-          refDiv.current.scrollTop = 0;
+        refDiv.current.scrollTop += 10;
+        if (refDiv.current.scrollTop >= refDiv.current.scrollHeight - refDiv.current.clientHeight) {
+          clearInterval(doScroll);
+          // refDiv.current.scrollTop = 0;
         }
       }
     }, 10);
     return () => clearInterval(doScroll);
-  }, []);
+  }, [hack2]);
 
   return (
     <div className="flex h-screen w-screen ">
       <div ref={refDiv} className="flex-col overflow-hidden text-xs text-primary">
-        {hack.map((line, i) => (
+        {/* {hack.map((line, i) => (
           <p key={i}>{line}</p>
-        ))}
+        ))} */}
       </div>
     </div>
   );

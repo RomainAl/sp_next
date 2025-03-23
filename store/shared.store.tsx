@@ -11,6 +11,17 @@ export type admin2userDataType = {
   elonMode?: number;
 };
 
+export const peerOptionsStore = {
+  host: "sp.attablee.art",
+  port: 443,
+  path: "/socket",
+  debug: 2,
+  key: "smartphonics",
+  config: {
+    iceServers: [{ urls: "stun:stun.services.mozilla.com" }, { urls: "stun:stun.l.google.com:19302" }],
+  },
+};
+
 export type user2adminDataType = {
   name?: string;
   currentInstaVid?: number;
