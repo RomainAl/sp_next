@@ -1,12 +1,13 @@
 // import { useState } from "react";
 
 // import { circOut } from "motion";
+import { cn } from "@/lib/utils";
 import { useAudioUserStore } from "@/store/audio.user.store";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { MouseEvent, useEffect, useMemo, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-export function Knob({ indexI, indexP }: { indexI: number; indexP: number }) {
+export function Knob({ indexI, indexP, paramsNb }: { indexI: number; indexP: number; paramsNb: number }) {
   const RNBOparam = useAudioUserStore(useShallow((store) => store.instrus[indexI].parameters[indexP]));
 
   const refPath = useRef<SVGPathElement>(null);
@@ -28,7 +29,7 @@ export function Knob({ indexI, indexP }: { indexI: number; indexP: number }) {
     return { x, y };
   }, []);
 
-  const aa = useMotionValue(0);
+  const aa = useMotionValue(Math.random());
   const aaa = useSpring(aa, { bounce: 0, duration: 500, restDelta: 0.1 });
   const pathD = useTransform(
     () =>
@@ -83,7 +84,7 @@ export function Knob({ indexI, indexP }: { indexI: number; indexP: number }) {
 
   return (
     <div ref={refDiv} onClick={handleClick} className="flex size-full touch-none flex-col items-center justify-center">
-      <p className="m-auto text-sm font-black text-white">{RNBOparam.name}</p>
+      <p className={cn("m-auto text-sm font-black text-white", { "text-xl": paramsNb <= 10 })}>{RNBOparam.name}</p>
       <div className="relative w-3/4">
         <svg viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`} fill="none" strokeWidth={stroke}>
           <path d={`M${startCircle.x} ${startCircle.y} A 50 50 0 1 1 ${stopCircle.x} ${stopCircle.y}`} className="stroke-accent" />
@@ -91,7 +92,7 @@ export function Knob({ indexI, indexP }: { indexI: number; indexP: number }) {
           <motion.line ref={refLine} x1={viewBoxSize / 2} y1={viewBoxSize / 2} x2={xl} y2={yl} className="stroke-primary" />
         </svg>
         <div className="absolute top-0 flex size-full items-end justify-center">
-          <motion.p className="text-xs font-black text-primary">{percent}</motion.p>
+          <motion.p className={cn("text-xs font-black text-primary", { "text-base": paramsNb <= 10 })}>{percent}</motion.p>
         </div>
       </div>
     </div>

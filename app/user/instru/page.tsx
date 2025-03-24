@@ -15,7 +15,6 @@ export default function Home() {
   const audioContext = useAudioUserStore((store) => store.audioContext);
   const intruNum: number = searchParams.has("n") ? Number(searchParams.get("n")) : 0;
   const instru = useAudioUserStore((store) => store.instrus[intruNum]);
-  console.log(instru?.parameters.length);
   const analyser = useAudioUserStore((store) => store.audioAnalyser);
   const refOutports = useRef<HTMLParagraphElement>(null);
   const { width = 0 } = useWindowSize();
@@ -84,17 +83,16 @@ export default function Home() {
           {instru?.parameters.map((param, i) => (
             <div
               key={param.name}
-              className={cn("aspect-square", {
-                "w-2/3": instru?.parameters.length === 1,
-                "w-1/3": instru?.parameters.length >= 1,
+              className={cn("aspect-square w-2/3", {
+                "w-1/3": instru?.parameters.length > 1,
                 "w-1/5": instru?.parameters.length >= 10,
               })}
             >
-              <Knob indexI={intruNum} indexP={i} />
+              <Knob indexI={intruNum} indexP={i} paramsNb={instru?.parameters.length} />
             </div>
           ))}
         </div>
-        <p className="text-sm text-primary" ref={refOutports}></p>
+        <p className="text-xl text-primary" ref={refOutports}></p>
       </div>
     </>
   );
