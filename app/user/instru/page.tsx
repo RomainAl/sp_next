@@ -1,7 +1,9 @@
 "use client";
 
+import { Knob } from "@/components/knob";
 import { SoundwaveCanvas } from "@/components/soundwaveCanvas";
-import { Slider } from "@/components/ui/slider";
+import { cn } from "@/lib/utils";
+// import { Slider } from "@/components/ui/slider";
 import { useAudioUserStore } from "@/store/audio.user.store";
 import { initSoundVisualizerParams, setSoundVisualizerParams } from "@/store/shared.store";
 import { useSearchParams } from "next/navigation";
@@ -11,17 +13,19 @@ import { useUnmount, useWindowSize } from "usehooks-ts";
 export default function Home() {
   const searchParams = useSearchParams();
   const audioContext = useAudioUserStore((store) => store.audioContext);
-  const intruNb: number = searchParams.has("n") ? Number(searchParams.get("n")) : 0;
-  const instru = useAudioUserStore((store) => store.instrus[intruNb]);
+  const intruNum: number = searchParams.has("n") ? Number(searchParams.get("n")) : 0;
+  const instru = useAudioUserStore((store) => store.instrus[intruNum]);
+  console.log(instru?.parameters.length);
   const analyser = useAudioUserStore((store) => store.audioAnalyser);
   const refOutports = useRef<HTMLParagraphElement>(null);
   const { width = 0 } = useWindowSize();
-  const sliderValChange = (sliderName: string, value: number) => {
-    const param = instru?.parametersById.get(sliderName);
-    if (param) {
-      param.value = value;
-    }
-  };
+  // const sliderValChange = (sliderName: string, value: number) => {
+  //   const param = instru?.parametersById.get(sliderName);
+  //   if (param) {
+  //     param.value = value;
+  //   }
+  // };
+
   setSoundVisualizerParams(initSoundVisualizerParams);
 
   useEffect(() => {
@@ -65,44 +69,28 @@ export default function Home() {
     } catch (e) {
       console.log(e);
     }
-    console.log(instru.messageEvent);
     console.log("TODO : OUT INSTRU (ETRANGE POURQUOI MARCHE PAS AVANT ?!)");
   });
-
-  // useEffect(() => {
-  //   console.log("IN INSTRU");
-  //   return () => {
-  //     analyser?.disconnect();
-  //     instru?.node.disconnect();
-  //     audioContext?.suspend();
-  //     try {
-  //       instru?.messageEvent?.removeAllSubscriptions();
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //     console.log(instru.messageEvent);
-  //     console.log("TODO : OUT INSTRU (ETRANGE POURQUOI MARCHE PAS AVANT ?!)");
-  //   };
-  // }, []);
 
   return (
     <>
       <div className="flex h-screen w-screen flex-col items-center justify-center gap-7">
-        <p>Instru n°{intruNb}</p>
-        <div className="flex w-2/3 flex-col rounded-full border border-primary/50 bg-background shadow transition-colors">
-          <SoundwaveCanvas width={width} height={width / 5} analyser={analyser} />
-        </div>
-        <div className="flex w-2/3 flex-col gap-4">
-          {instru?.parameters.map((param) => (
-            <div key={param.name} className="flex flex-col items-center justify-center gap-2">
-              <h2>{param.name}</h2>
-              <Slider
-                min={param.min}
-                max={param.max}
-                step={(param.max - param.min) / 100}
-                defaultValue={[param.initialValue]}
-                onValueChange={(value) => sliderValChange(param.name, value[0])}
-              />
+        {instru?.parameters.length < 10 && (
+          <div className="flex w-2/3 flex-col rounded-full border border-primary/50 bg-background shadow transition-colors">
+            <SoundwaveCanvas width={width} height={width / 5} analyser={analyser} />
+          </div>
+        )}
+        <div className="flex w-full flex-row flex-wrap items-center justify-center gap-4">
+          {instru?.parameters.map((param, i) => (
+            <div
+              key={param.name}
+              className={cn("aspect-square", {
+                "w-2/3": instru?.parameters.length === 1,
+                "w-1/3": instru?.parameters.length >= 1,
+                "w-1/5": instru?.parameters.length >= 10,
+              })}
+            >
+              <Knob indexI={intruNum} indexP={i} />
             </div>
           ))}
         </div>

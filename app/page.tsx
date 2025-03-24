@@ -1,6 +1,5 @@
 "use client";
 
-import { Knob } from "@/components/knob";
 import { LogoSP } from "@/components/logoSP";
 import { Button } from "@/components/ui/button";
 // import { Button } from "@/components/ui/button";
@@ -33,9 +32,9 @@ export default function Home() {
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-5">
       <a href="https://sp.attablee.art">GOTO</a>
       <div className="flex w-1/2 max-w-sm flex-col items-center justify-center">
-        <div className="w-1/2 ">
+        {/* <div className="w-1/2 ">
           <Knob />
-        </div>
+        </div> */}
         <LogoSP />
         <p className="text-2xl italic text-primary">smart.phonics</p>
       </div>
